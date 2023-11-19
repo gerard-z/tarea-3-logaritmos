@@ -19,15 +19,15 @@ using namespace std;
 // Note that this method seems to be 
 // a O(n^2) method, but it's a O(n) 
 // method as the inner loop runs at most 6 times 
-float stripClosest(Point strip[], int size, float d);
+double stripClosest(Point strip[], int size, double d);
 
 // A recursive function to find the 
 // smallest distance. The array P contains 
 // all points sorted according to x coordinate 
-float closestUtil(Point P[], int n);
+double closestUtil(Point P[], int n);
 
 // The main function that finds the smallest distance 
 // This method mainly uses closestUtil() 
-float closest(Point P[], int n);
+double closestP(Point P[], int n);
 
 // This code is contributed by rathbhupendra
