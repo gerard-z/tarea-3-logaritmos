@@ -4,8 +4,7 @@
 
 // Origin: https://www.geeksforgeeks.org/closest-pair-of-points-using-divide-and-conquer-algorithm/
 
-#include <bits/stdc++.h>
-#include <resources.h>
+#include "divide-and-conquer.h"
 using namespace std;
 
 
