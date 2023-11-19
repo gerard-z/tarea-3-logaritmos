@@ -5,7 +5,6 @@
 // Origin: https://www.geeksforgeeks.org/closest-pair-of-points-using-divide-and-conquer-algorithm/
 
 #include "stdlib.h"
-#include "iostream"
 #include <resources.h>
 using namespace std;
 
@@ -19,15 +18,15 @@ using namespace std;
 // Note that this method seems to be 
 // a O(n^2) method, but it's a O(n) 
 // method as the inner loop runs at most 6 times 
-double stripClosest(Point strip[], int size, double d);
+ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d);
 
 // A recursive function to find the 
 // smallest distance. The array P contains 
 // all points sorted according to x coordinate 
-double closestUtil(Point P[], int n);
+ClosestPoint& closestUtil(Point P[], int n);
 
 // The main function that finds the smallest distance 
 // This method mainly uses closestUtil() 
-double closestP(Point P[], int n);
+ClosestPoint& closestP(Point P[], int n);
 
 // This code is contributed by rathbhupendra
