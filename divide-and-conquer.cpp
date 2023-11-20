@@ -19,7 +19,7 @@ using namespace std;
 // method as the inner loop runs at most 6 times 
 ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d) 
 { 
-	double min = d.distance; // Initialize the minimum distance as d
+	float min = d.distance; // Initialize the minimum distance as d
 
 	qsort(strip, size, sizeof(Point), compareY); 
 

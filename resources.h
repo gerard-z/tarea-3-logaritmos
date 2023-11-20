@@ -7,7 +7,7 @@
 class Point 
 { 
 	public:
-	double x, y; 
+	float x, y; 
 
     friend std::ostream& operator<<(std::ostream& os, const Point& p);
 };
@@ -16,7 +16,7 @@ class ClosestPoint
 {
     public:
     Point *p1, *p2;
-    double distance;
+    float distance;
 };
 
 // Needed to sort array of points 
@@ -28,7 +28,7 @@ int compareY(const void* a, const void* b);
 
 // A utility function to find the 
 // distance between two points 
-double dist(Point p1, Point p2);
+float dist(Point p1, Point p2);
 
 // A Brute Force method to return the 
 // smallest distance between two points 

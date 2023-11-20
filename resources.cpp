@@ -27,7 +27,7 @@ int compareY(const void* a, const void* b)
 
 // A utility function to find the 
 // distance between two points 
-double dist(Point p1, Point p2) 
+float dist(Point p1, Point p2) 
 { 
 	return sqrt( (p1.x - p2.x)*(p1.x - p2.x) + 
 				(p1.y - p2.y)*(p1.y - p2.y) 
@@ -39,7 +39,7 @@ double dist(Point p1, Point p2)
 // in P[] of size n 
 ClosestPoint& bruteForce(Point P[], int n) 
 { 
-	double min = numeric_limits<double>::max(); 
+	float min = numeric_limits<float>::max(); 
     Point p1, p2;
 	for (int i = 0; i < n; ++i) 
 		for (int j = i+1; j < n; ++j) 
