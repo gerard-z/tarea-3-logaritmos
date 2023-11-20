@@ -17,7 +17,7 @@ Point* generarPuntos(int n) {
     return puntos;
 }
 
-double* probarAlgoritmo(Point P[], int n, int k, double (*algoritmo)(Point[], int)){
+double* probarAlgoritmo(Point P[], int n, int k, ClosestPoint& (*algoritmo)(Point[], int)){
     double* tiempos = new double[k];
     for (int i = 0; i < k; i++) {
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
@@ -28,7 +28,7 @@ double* probarAlgoritmo(Point P[], int n, int k, double (*algoritmo)(Point[], in
     return tiempos;
 }
 
-double*** experimento(int nMin, int nMax, int nStep, int k, double (*algoritmo)(Point[], int), double (*algoritmo2)(Point[], int)){
+double*** experimento(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algoritmo)(Point[], int), ClosestPoint& (*algoritmo2)(Point[], int)){
     int n = (nMax - nMin) / nStep + 1;
     double** tiempos = new double*[n];
     double** tiempos2 = new double*[n];
@@ -55,7 +55,7 @@ double*** experimento(int nMin, int nMax, int nStep, int k, double (*algoritmo)(
     return tiemposTotales;
 }
 
-double** pruebaAlgoritmoRandom(int n, int k, double (*algoritmo)(Point[], int), double (*algoritmo2)(Point[], int)){
+double** pruebaAlgoritmoRandom(int n, int k, ClosestPoint& (*algoritmo)(Point[], int), ClosestPoint& (*algoritmo2)(Point[], int)){
     double* tiempos = new double[k];
     double* tiempos2 = new double[k];
     for (int i = 0; i < k; i++) {
@@ -75,7 +75,7 @@ double** pruebaAlgoritmoRandom(int n, int k, double (*algoritmo)(Point[], int), 
     return tiemposTotales;
 }
 
-double*** experimentoRandom(int nMin, int nMax, int nStep, int k, double (*algoritmo)(Point[], int), double (*algoritmo2)(Point[], int)){
+double*** experimentoRandom(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algoritmo)(Point[], int), ClosestPoint& (*algoritmo2)(Point[], int)){
     int n = (nMax - nMin) / nStep + 1;
     double** tiempos = new double*[n];
     double** tiempos2 = new double*[n];
