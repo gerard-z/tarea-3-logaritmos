@@ -10,6 +10,11 @@ ostream& operator<<(ostream& os, const Point& p){
     return os;
 }
 
+ostream& operator<<(ostream& os, const ClosestPoint& p){
+    os << "P1: " << *(p.p1) << " P2: " << *(p.p2) << " Distance: " << p.distance;
+    return os;
+}
+
 // Needed to sort array of points 
 // according to X coordinate 
 int compareX(const void* a, const void* b) 
