@@ -34,10 +34,8 @@ ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d)
 		for (int j = i+1; j < size && (strip[j].y - strip[i].y) < min; ++j) 
 			if (dist(strip[i],strip[j]) < min){
 				min = dist(strip[i], strip[j]);
-				p->x = strip[i].x;
-				p->y = strip[i].y;
-				pt2->x = strip[j].x;
-				pt2->y = strip[j].y;
+				*p = strip[i];
+				*pt2 = strip[j];
 			}
 	ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
 	if (p != NULL && pt2 != NULL){
@@ -50,6 +48,7 @@ ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d)
 		c->p2 = d.p2;
 		c->distance = d.distance;
 	}
+	free(strip);
 	return *c;
 } 
 
@@ -79,7 +78,7 @@ ClosestPoint& closestUtil(Point P[], int n)
 	// Build an array strip[] that contains 
 	// points close (closer than d) 
 	// to the line passing through the middle point 
-	Point strip[n]; 
+	Point* strip = (Point*)malloc(n * sizeof(Point)); 
 	int j = 0; 
 	for (int i = 0; i < n; i++) 
 		if (abs(P[i].x - midPoint.x) < d.distance) 
@@ -93,7 +92,7 @@ ClosestPoint& closestUtil(Point P[], int n)
 
 // The main function that finds the smallest distance 
 // This method mainly uses closestUtil() 
-ClosestPoint& closestP(Point P[], int n) 
+ClosestPoint& closestDivide(Point P[], int n) 
 { 
 	qsort(P, n, sizeof(Point), compareX); 
 
@@ -103,13 +102,13 @@ ClosestPoint& closestP(Point P[], int n)
 } 
 
 // Driver code 
-int main() 
-{ 
-	Point P[] = {{2, 3}, {12, 30}, {40, 50}, {5, 1}, {12, 10}, {3, 4}};
-	int n = sizeof(P) / sizeof(P[0]); 
-	ClosestPoint c = closestP(P, n);
-	cout << "The smallest distance is " << c.distance << " between " << *(c.p1) << " and " << *(c.p2) << endl; 
-	return 0; 
-} 
+// int main() 
+// { 
+// 	Point P[] = {{2, 3}, {12, 30}, {40, 50}, {5, 1}, {12, 10}, {3, 4}};
+// 	int n = sizeof(P) / sizeof(P[0]); 
+// 	ClosestPoint c = closestDivide(P, n);
+// 	cout << "The smallest distance is " << c.distance << " between " << *(c.p1) << " and " << *(c.p2) << endl; 
+// 	return 0; 
+// } 
 
 // This code is contributed by rathbhupendra

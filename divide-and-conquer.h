@@ -27,6 +27,6 @@ ClosestPoint& closestUtil(Point P[], int n);
 
 // The main function that finds the smallest distance 
 // This method mainly uses closestUtil() 
-ClosestPoint& closestP(Point P[], int n);
+ClosestPoint& closestDivide(Point P[], int n);
 
 // This code is contributed by rathbhupendra
