@@ -4,7 +4,7 @@
 #include <random>
 #include <ctime>
 #include <chrono>
-#include <resources.h>
+#include <divide-and-conquer.h>
 
 // Genera un set de n puntos pertenecientes al cuadrado [0,1)x[0,1)
 Point* generarPuntos(int n);
