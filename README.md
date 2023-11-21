@@ -19,3 +19,15 @@ g++ -Wall -c resources.cpp
 g++ -I.\ -Wall -c divide-and-conquer.cpp
 g++ -Wall -o divide-and-conquer.exe divide-and-conquer.o resources.o
 ```
+
+### Para compilar el algoritmo de experimento con el archivo recursos.
+```
+g++ -Wall -I.\ -o experimento.exe experimento.cpp divide-and-conquer.cpp resources.cpp
+```
+También se puede hacer paso a paso:
+```
+g++ -Wall -c resources.cpp
+g++ -I.\ -Wall -c divide-and-conquer.cpp
+g++ -I.\ -Wall -c experimento.cpp
+g++ -Wall -o experimento.exe experimento.o divide-and-conquer.o resources.o
+``` 
