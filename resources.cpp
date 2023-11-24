@@ -11,12 +11,13 @@ ostream& operator<<(ostream& os, const Point& p){
 }
 
 ostream& operator<<(ostream& os, const ClosestPoint& p){
-    os << "P1: " << *(p.p1) << " P2: " << *(p.p2) << " Distance: " << p.distance << " Comparaciones: " << p.comparaciones << " Tiempo: " << p.tiempo << endl;
+    os << "P1: " << *(p.p1) << " P2: " << *(p.p2) << " Distance: " << p.distance << " Comparaciones: " << p.comparaciones << " Tiempo: " << p.tiempo;
     return os;
 }
 
 void fprintf(FILE *out, const ClosestPoint& p){
-    fprintf(out, "P1: (%f, %f) P2: (%f, %f) Distance: %f Comparaciones: %d Tiempo: %f\n", p.p1->x, p.p1->y, p.p2->x, p.p2->y, p.distance, p.comparaciones, p.tiempo);
+    // (x1, y1), (x2, y2), distance, comparaciones, tiempo
+    fprintf(out, "%f,%f,%f,%f,%f,%d,%f\n", p.p1->x, p.p1->y, p.p2->x, p.p2->y, p.distance, p.comparaciones, p.tiempo);
 }
 
 // Needed to sort array of points 
