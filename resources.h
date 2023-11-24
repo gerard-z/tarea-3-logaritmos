@@ -17,9 +17,12 @@ class ClosestPoint
     public:
     Point *p1, *p2;
     float distance;
+    int comparaciones;
 
     friend std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
 };
+
+void fprintf(FILE *out, const ClosestPoint& p);
 
 // Needed to sort array of points 
 // according to X coordinate 
