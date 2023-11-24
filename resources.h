@@ -18,6 +18,7 @@ class ClosestPoint
     Point *p1, *p2;
     float distance;
     int comparaciones;
+    double tiempo;
 
     friend std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
 };
