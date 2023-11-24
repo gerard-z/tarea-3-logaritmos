@@ -64,14 +64,14 @@ void printPoint(Point p) {
 }
 
 // Aplica la funcion de hash a un punto
-Point applyPointHashU(HashU *f, Point p, int d) {
+Point applyPointHashU(HashU *f, Point p) {
     int x = applyHashU(f, p.x);
     int y = applyHashU(f, p.y);
     return {x, y};
 }
 
 // Aplica la funcion de hash rapido a un punto
-Point applyPointHashRapido(HashU *f, Point p, int d) {
+Point applyPointHashRapido(HashU *f, Point p) {
     int x = applyHashRapido(f, p.x);
     int y = applyHashRapido(f, p.y);
     return {x, y};
@@ -81,36 +81,89 @@ Point applyPointHashRapido(HashU *f, Point p, int d) {
 ////////////////////////
  /*      Tabla        */
 ////////////////////////
-// Linked list
-typedef struct Node {
-    Point p;
-    struct Node *next;
-} Node;
 
-// Añadir elemento a la lista
-void add(Node **head, Point p) {
-    Node *newNode = (Node *) malloc(sizeof(Node));
+// Linked list para las celdas de la tabla
+typedef struct List {
+    Point p;
+    struct List *next;
+} List;
+
+// Crea un elemento de lista
+List *createList(Point p) {
+    List *newNode = (List *) malloc(sizeof(List));
     newNode->p = p;
-    newNode->next = *head;
-    *head = newNode;
+    newNode->next = NULL;
+    return newNode;
 }
+
+// Añade un elemento a la lista
+void putBack(List **head, Point p) {
+    List *newNode = createList(p);
+    if (*head == NULL) {
+        *head = newNode;
+    } else {
+        List *current = *head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newNode;
+    }
+}
+
+// Nodos de la tabla (filas y columnas)
+typedef struct Node {
+    void *ptr;
+    Node *next;
+} Node;
 
 // Hash table
 typedef struct {
-    int m;
-    Node **table;
+    int d; // Tamaño de grilla
+    int realSize; // Tamaño real de la tabla (int)
+    Node **table; // Tabla
 } HashTable;
 
-// Crear tabla
-HashTable *createHashTable(int m) {
-    HashTable *t = (HashTable *) malloc(sizeof(HashTable));
-    t->m = m;
-    t->table = (Node **) malloc(m * sizeof(Node *));
-    for (int i = 0; i < m; i++) {
-        t->table[i] = NULL;
+
+// Crea una tabla de hash
+HashTable *createHashTable(int d) {
+    HashTable *tabla = (HashTable *) malloc(sizeof(HashTable));
+    // Tamaños de la tabla
+    tabla->d = d;
+    int realSize = (int) (1/d) + 1;
+    tabla->realSize = realSize;
+    
+    // Inicializar la tabla
+    tabla->table = (Node **) malloc(sizeof(Node *) * realSize); // Se pide memoria para las filas
+    for (int i = 0; i < realSize; i++) {
+        tabla->table[i] = (Node *) malloc(realSize * sizeof(Node)); // Se pide memoria para las columnas
+        for (int j = 0; j < realSize; j++) {
+            // Inicializar cada elemento de la tabla en nulo
+            tabla->table[i][j].ptr = NULL;
+            tabla->table[i][j].next = NULL;
+        }
     }
-    return t;
+
+    return tabla;
 }
+
+// Añade un elemento a la tabla
+void addHashTable(HashTable *tabla, Point p, HashU *f) {
+    Point pHashed = applyPointHashU(f, p);
+    int x = pHashed.x;
+    int y = pHashed.y;
+    
+    // Si la posicion esta vacia, se crea una lista y se agrega el elemento
+    if (tabla->table[x][y].ptr == NULL) {
+        List *head = createList(p);
+        tabla->table[x][y].ptr = head;
+    } else {
+        // Si la posicion no esta vacia, se agrega a la lista
+        List *head = (List *) tabla->table[x][y].ptr;
+        putBack(&head, p);
+    }
+}
+
+
 
 int main() {
     // /* Hashing test */
@@ -130,7 +183,7 @@ int main() {
     // int m = 10;
     // HashU *f = createHashU(a, b, p, m);
     // Point p1 = {123456789, 87654321};
-    // Point p2 = applyPointHashU(f, p1, m);
+    // Point p2 = applyPointHashU(f, p1);
     // cout << "Hashing ";
     // printPoint(p1);
     // cout << " = ";
@@ -145,7 +198,7 @@ int main() {
     int m = 10;
     HashU *f = createHashU(a, b, p, m);
     Point p1 = {123456789, 87654321};
-    Point p2 = applyPointHashRapido(f, p1, m);
+    Point p2 = applyPointHashRapido(f, p1);
     cout << "Hashing ";
     printPoint(p1);
     cout << " = ";
