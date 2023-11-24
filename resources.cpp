@@ -56,17 +56,19 @@ float dist(Point p1, Point p2)
 // A Brute Force method to return the 
 // smallest distance between two points 
 // in P[] of size n 
-ClosestPoint& bruteForce(Point P[], int n) 
+ClosestPoint& bruteForce(Point P[], int n, int &comparaciones) 
 { 
 	float min = numeric_limits<float>::max(); 
     Point p1, p2;
 	for (int i = 0; i < n; ++i) 
-		for (int j = i+1; j < n; ++j) 
+		for (int j = i+1; j < n; ++j){
+            comparaciones += 1;
 			if (dist(P[i], P[j]) < min){
 				min = dist(P[i], P[j]); 
                 p1 = P[i];
                 p2 = P[j];
             }
+        }
     ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
     Point *p = (Point*)malloc(sizeof(Point));
     p->x = p1.x;

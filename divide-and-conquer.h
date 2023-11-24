@@ -18,15 +18,15 @@ using namespace std;
 // Note that this method seems to be 
 // a O(n^2) method, but it's a O(n) 
 // method as the inner loop runs at most 6 times 
-ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d);
+ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d, int &comparaciones);
 
 // A recursive function to find the 
 // smallest distance. The array P contains 
 // all points sorted according to x coordinate 
-ClosestPoint& closestUtil(Point P[], int n);
+ClosestPoint& closestUtil(Point P[], int n, int &comparaciones);
 
 // The main function that finds the smallest distance 
 // This method mainly uses closestUtil() 
-ClosestPoint& closestDivide(Point P[], int n);
+ClosestPoint& closestDivide(Point P[], int n, int &comparaciones);
 
 // This code is contributed by rathbhupendra
