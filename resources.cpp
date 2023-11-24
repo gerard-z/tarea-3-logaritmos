@@ -51,7 +51,13 @@ float dist(Point p1, Point p2)
 	return sqrt( (p1.x - p2.x)*(p1.x - p2.x) + 
 				(p1.y - p2.y)*(p1.y - p2.y) 
 			); 
-} 
+}
+
+float dist2(Point p1, Point p2)
+{
+    return (p1.x - p2.x)*(p1.x - p2.x) + 
+				(p1.y - p2.y)*(p1.y - p2.y);     
+}
 
 // A Brute Force method to return the 
 // smallest distance between two points 
