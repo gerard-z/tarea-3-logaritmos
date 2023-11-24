@@ -19,12 +19,13 @@ Point* generarPuntos(int n) {
     return puntos;
 }
 
-double* probarAlgoritmo(Point P[], int n, int k, ClosestPoint& (*algoritmo)(Point[], int)){
+double* probarAlgoritmo(Point P[], int n, int k, ClosestPoint& (*algoritmo)(Point[], int, int&)){
     double* tiempos = (double*)malloc(k * sizeof(double));
+    int comparaciones = 0;
     for (int i = 0; i < k; i++) {
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
         #if DEBUG
-        ClosestPoint resultado = algoritmo(P, n);
+        ClosestPoint resultado = algoritmo(P, n, comparaciones);
         cout << "Resultado: " << resultado << endl;
         #else
         algoritmo(P, n);
@@ -35,7 +36,7 @@ double* probarAlgoritmo(Point P[], int n, int k, ClosestPoint& (*algoritmo)(Poin
     return tiempos;
 }
 
-double*** experimento(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algoritmo)(Point[], int), ClosestPoint& (*algoritmo2)(Point[], int)){
+double*** experimento(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algoritmo)(Point[], int, int&), ClosestPoint& (*algoritmo2)(Point[], int, int&)){
     int n = (nMax - nMin) / nStep + 1;
     double** tiempos = new double*[n];
     double** tiempos2 = new double*[n];
@@ -62,17 +63,18 @@ double*** experimento(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algo
     return tiemposTotales;
 }
 
-double** pruebaAlgoritmoRandom(int n, int k, ClosestPoint& (*algoritmo)(Point[], int), ClosestPoint& (*algoritmo2)(Point[], int)){
+double** pruebaAlgoritmoRandom(int n, int k, ClosestPoint& (*algoritmo)(Point[], int, int&), ClosestPoint& (*algoritmo2)(Point[], int, int&)){
     double* tiempos = new double[k];
     double* tiempos2 = new double[k];
+    int comparaciones = 0, comparaciones2 = 0;
     for (int i = 0; i < k; i++) {
         Point* P = generarPuntos(n);
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
-        algoritmo(P, n);
+        algoritmo(P, n, comparaciones);
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
         tiempos[i] = duration_cast<duration<double>>(t2 - t1).count();
         high_resolution_clock::time_point t3 = high_resolution_clock::now();
-        algoritmo2(P, n);
+        algoritmo2(P, n, comparaciones2);
         high_resolution_clock::time_point t4 = high_resolution_clock::now();
         tiempos2[i] = duration_cast<duration<double>>(t4 - t3).count();
     }
@@ -82,7 +84,7 @@ double** pruebaAlgoritmoRandom(int n, int k, ClosestPoint& (*algoritmo)(Point[],
     return tiemposTotales;
 }
 
-double*** experimentoRandom(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algoritmo)(Point[], int), ClosestPoint& (*algoritmo2)(Point[], int)){
+double*** experimentoRandom(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algoritmo)(Point[], int, int&), ClosestPoint& (*algoritmo2)(Point[], int, int&)){
     int n = (nMax - nMin) / nStep + 1;
     double** tiempos = new double*[n];
     double** tiempos2 = new double*[n];
@@ -116,7 +118,7 @@ void printArrayPoints(Point P[], int n){
 }
 
 int main(){
-    int n = 10;
+    int n = 20;
     Point* P = generarPuntos(n);
     printArrayPoints(P, n);
     cout << "Brute force:" << "\n";

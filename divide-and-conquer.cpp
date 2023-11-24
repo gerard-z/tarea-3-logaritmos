@@ -46,6 +46,7 @@ ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d, int &compar
 	pt2->y = p2.y;
 	c->p2 = pt2;
 	c->distance = min;
+	c->comparaciones = comparaciones;
 	free(strip);
 	return *c;
 } 

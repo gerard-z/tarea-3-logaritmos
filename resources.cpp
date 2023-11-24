@@ -81,6 +81,7 @@ ClosestPoint& bruteForce(Point P[], int n, int &comparaciones)
     // c->p1 = P[p1];
     // c->p2 = P[p2];
     c->distance = min;
+    c->comparaciones = comparaciones;
 	return *c;
 } 
 
