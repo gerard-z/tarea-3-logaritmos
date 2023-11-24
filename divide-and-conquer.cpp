@@ -26,28 +26,24 @@ ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d)
 	// Pick all points one by one and try the next points till the difference 
 	// between y coordinates is smaller than d. 
 	// This is a proven fact that this loop runs at most 6 times
-	Point *p = (Point*)malloc(sizeof(Point));
-	Point *pt2 = (Point*)malloc(sizeof(Point));
-	p = NULL;
-	pt2 = NULL;
+	Point p1 = *(d.p1), p2 = *(d.p2);
 	for (int i = 0; i < size; ++i) 
 		for (int j = i+1; j < size && (strip[j].y - strip[i].y) < min; ++j) 
 			if (dist(strip[i],strip[j]) < min){
 				min = dist(strip[i], strip[j]);
-				*p = strip[i];
-				*pt2 = strip[j];
+				p1 = strip[i];
+				p2 = strip[j];
 			}
 	ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
-	if (p != NULL && pt2 != NULL){
-		c->p1 = p;
-		c->p2 = pt2;
-		c->distance = min;
-	}
-	else{
-		c->p1 = d.p1;
-		c->p2 = d.p2;
-		c->distance = d.distance;
-	}
+	Point *p = (Point*)malloc(sizeof(Point));
+	p->x = p1.x;
+	p->y = p1.y;
+	c->p1 = p;
+	Point *pt2 = (Point*)malloc(sizeof(Point));
+	pt2->x = p2.x;
+	pt2->y = p2.y;
+	c->p2 = pt2;
+	c->distance = min;
 	free(strip);
 	return *c;
 } 
@@ -56,7 +52,7 @@ ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d)
 // smallest distance. The array P contains 
 // all points sorted according to x coordinate 
 ClosestPoint& closestUtil(Point P[], int n) 
-{ 
+{
 	// If there are 2 or 3 points, then use brute force 
 	if (n <= 3) 
 		return bruteForce(P, n); 
@@ -94,7 +90,7 @@ ClosestPoint& closestUtil(Point P[], int n)
 // This method mainly uses closestUtil() 
 ClosestPoint& closestDivide(Point P[], int n) 
 { 
-	qsort(P, n, sizeof(Point), compareX); 
+	qsort(P, n, sizeof(Point), compareX);
 
 	// Use recursive function closestUtil()
 	// to find the smallest distance 
