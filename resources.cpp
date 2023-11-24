@@ -20,14 +20,24 @@ ostream& operator<<(ostream& os, const ClosestPoint& p){
 int compareX(const void* a, const void* b) 
 { 
 	Point *p1 = (Point *)a, *p2 = (Point *)b; 
-	return (p1->x - p2->x); 
+	if (p1->x > p2->x) 
+        return 1;
+    else if (p1->x < p2->x)
+        return -1;
+    else
+        return 0;
 } 
 
 // Needed to sort array of points according to Y coordinate 
 int compareY(const void* a, const void* b) 
 { 
 	Point *p1 = (Point *)a, *p2 = (Point *)b; 
-	return (p1->y - p2->y); 
+	if (p1->y > p2->y) 
+        return 1;
+    else if (p1->y < p2->y)
+        return -1;
+    else
+        return 0;
 } 
 
 // A utility function to find the 
