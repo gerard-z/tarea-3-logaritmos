@@ -6,6 +6,7 @@ using namespace std;
 using namespace std::chrono;
 
 #define PRINT true
+#define SAVE false
 
 Point* generarPuntos(int n) {
     Point* puntos = (Point*)malloc(n * sizeof(Point));
@@ -18,9 +19,12 @@ Point* generarPuntos(int n) {
     }
     return puntos;
 }
-
+#if SAVE
 ClosestPoint* probarAlgoritmo(FILE *out, Point P[], int n, int k, ClosestPoint& (*algoritmo)(Point[], int, ull&)){
     ClosestPoint* tiempos = (ClosestPoint*)malloc(k * sizeof(ClosestPoint));
+#else
+void probarAlgoritmo(FILE *out, Point P[], int n, int k, ClosestPoint& (*algoritmo)(Point[], int, ull&)){
+#endif
     ull comparaciones, comparaciones_promedio = 0;
     double tiempo_promedio = 0;
     for (int i = 0; i < k; i++) {
@@ -32,13 +36,12 @@ ClosestPoint* probarAlgoritmo(FILE *out, Point P[], int n, int k, ClosestPoint& 
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
         double tiempo = duration_cast<duration<double>>(t2 - t1).count();
         resultado.tiempo = tiempo;
+        #if SAVE
         tiempos[i] = resultado;
+        #endif
         comparaciones_promedio += comparaciones;
         tiempo_promedio += tiempo;
         free(P_copy);
-        #if DEBUG
-        cout << "Resultado "<< i+1 << " : " << resultado << endl;
-        #endif
         #if PRINT
         fprintf(out, resultado);
         #endif
@@ -49,9 +52,11 @@ ClosestPoint* probarAlgoritmo(FILE *out, Point P[], int n, int k, ClosestPoint& 
     fprintf(out, "Comparaciones promedio: %lld\n", comparaciones_promedio);
     fprintf(out, "Tiempo promedio: %f\n", tiempo_promedio);
     #endif
+    #if SAVE
     return tiempos;
+    #endif
 }
-
+#if SAVE
 ClosestPoint*** experimento(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algoritmo)(Point[], int, ull&), ClosestPoint& (*algoritmo2)(Point[], int, ull&)){
     int n = (nMax - nMin) / nStep + 1;
     ClosestPoint** tiempos = new ClosestPoint*[n];
@@ -76,11 +81,11 @@ ClosestPoint*** experimento(int nMin, int nMax, int nStep, int k, ClosestPoint& 
         #if PRINT
         fprintf(out, "\n###################################\n");
         #endif
+        free(puntos);
         for (int j = 0; j < k; j++) {
             tiempos[i][j] = tiemposActual[j];
             tiempos2[i][j] = tiemposActual2[j];
         }
-        free(puntos);
         free(tiemposActual);
         free(tiemposActual2);
     }
@@ -89,10 +94,37 @@ ClosestPoint*** experimento(int nMin, int nMax, int nStep, int k, ClosestPoint& 
     tiemposTotales[1] = tiempos2;
     return tiemposTotales;
 }
+#else
+void experimento(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algoritmo)(Point[], int, ull&), ClosestPoint& (*algoritmo2)(Point[], int, ull&)){
+    int n = (nMax - nMin) / nStep + 1;
+    FILE *out = fopen("resultados_experimento.txt", "w+");
+    for (int i = 0; i < n; i++) {
+        int nActual = nMin + i * nStep;
+        Point* puntos = generarPuntos(nActual);
+        #if PRINT
+        fprintf(out, "n = %d\n", nActual);
+        fprintf(out, "Algoritmo 1:\n");
+        #endif
+        probarAlgoritmo(out, puntos, nActual, k, algoritmo);
+        #if PRINT
+        fprintf(out, "Algoritmo 2:\n");
+        #endif
+        probarAlgoritmo(out, puntos, nActual, k, algoritmo2);
+        #if PRINT
+        fprintf(out, "\n###################################\n");
+        #endif
+        free(puntos);
+    }
+}
+#endif
 
+#if SAVE
 ClosestPoint** pruebaAlgoritmoRandom(FILE *out, int n, int k, ClosestPoint& (*algoritmo)(Point[], int, ull&), ClosestPoint& (*algoritmo2)(Point[], int, ull&)){
     ClosestPoint* tiempos = new ClosestPoint[k];
     ClosestPoint* tiempos2 = new ClosestPoint[k];
+#else
+void pruebaAlgoritmoRandom(FILE *out, int n, int k, ClosestPoint& (*algoritmo)(Point[], int, ull&), ClosestPoint& (*algoritmo2)(Point[], int, ull&)){
+#endif
     ull comparaciones, comparaciones2;
     ull comparaciones_promedio = 0, comparaciones_promedio2 = 0;
     double tiempo_promedio = 0, tiempo_promedio2 = 0;
@@ -106,12 +138,16 @@ ClosestPoint** pruebaAlgoritmoRandom(FILE *out, int n, int k, ClosestPoint& (*al
         ClosestPoint resultado1 = algoritmo(P, n, comparaciones);
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
         resultado1.tiempo = duration_cast<duration<double>>(t2 - t1).count();
+        #if SAVE
         tiempos[i] = resultado1;
+        #endif
         high_resolution_clock::time_point t3 = high_resolution_clock::now();
         ClosestPoint resultado2 = algoritmo2(P_copy, n, comparaciones2);
         high_resolution_clock::time_point t4 = high_resolution_clock::now();
         resultado2.tiempo = duration_cast<duration<double>>(t4 - t3).count();
+        #if SAVE
         tiempos2[i] = resultado2;
+        #endif
         free(P);
         free(P_copy);
         #if PRINT
@@ -124,9 +160,6 @@ ClosestPoint** pruebaAlgoritmoRandom(FILE *out, int n, int k, ClosestPoint& (*al
         fprintf(out, resultado2);
         #endif
     }
-    ClosestPoint** tiemposTotales = new ClosestPoint*[2];
-    tiemposTotales[0] = tiempos;
-    tiemposTotales[1] = tiempos2;
     #if PRINT
     comparaciones_promedio /= k;
     comparaciones_promedio2 /= k;
@@ -137,9 +170,15 @@ ClosestPoint** pruebaAlgoritmoRandom(FILE *out, int n, int k, ClosestPoint& (*al
     fprintf(out, "Comparaciones promedio: %lld\n", comparaciones_promedio2);
     fprintf(out, "Tiempo promedio: %f\n", tiempo_promedio2);
     #endif
+    #if SAVE
+    ClosestPoint** tiemposTotales = new ClosestPoint*[2];
+    tiemposTotales[0] = tiempos;
+    tiemposTotales[1] = tiempos2;
     return tiemposTotales;
+    #endif
 }
 
+#if SAVE
 ClosestPoint*** experimentoRandom(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algoritmo)(Point[], int, ull&), ClosestPoint& (*algoritmo2)(Point[], int, ull&)){
     int n = (nMax - nMin) / nStep + 1;
     ClosestPoint** tiempos = new ClosestPoint*[n];
@@ -172,6 +211,23 @@ ClosestPoint*** experimentoRandom(int nMin, int nMax, int nStep, int k, ClosestP
     tiemposTotales[1] = tiempos2;
     return tiemposTotales;
 }
+#else
+void experimentoRandom(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algoritmo)(Point[], int, ull&), ClosestPoint& (*algoritmo2)(Point[], int, ull&)){
+    int n = (nMax - nMin) / nStep + 1;
+    FILE *out = fopen("resultados_experimento_random.txt", "w+");
+    for (int i = 0; i < n; i++) {
+        int nActual = nMin + i * nStep;
+        #if PRINT
+        fprintf(out, "n = %d\n", nActual);
+        fprintf(out, "Algoritmo 1 y 2:\n");
+        #endif
+        pruebaAlgoritmoRandom(out, nActual, k, algoritmo, algoritmo2);
+        #if PRINT
+        fprintf(out, "\n###################################\n");
+        #endif
+    }
+}
+#endif
 
 void printArrayPoints(Point P[], int n){
     cout << "Puntos:" << endl;
@@ -186,10 +242,15 @@ int main(){
     //int nMin = 5'000'000, nMax= 50'000'000, nStep = 5'000'000, k = 100;
     int nMin = 500, nMax= 5000, nStep = 500, k = 10;
     // int n = (nMax - nMin) / nStep + 1;
+    #if SAVE
     ClosestPoint ***resultados = experimento(nMin, nMax, nStep, k, bruteForce, closestDivide);
     free(resultados);
     ClosestPoint ***resultados2 = experimentoRandom(nMin, nMax, nStep, k, bruteForce, closestDivide);
     free(resultados2);
+    #else
+    experimento(nMin, nMax, nStep, k, bruteForce, closestDivide);
+    experimentoRandom(nMin, nMax, nStep, k, bruteForce, closestDivide);
+    #endif
 
 
     // ClosestPoint **resultadosAlgoritmo1 = resultados[0];
