@@ -81,8 +81,10 @@ ClosestPoint* bruteForce(Point P[], int n, ull &comparaciones)
 { 
 	float min = numeric_limits<float>::max(); 
     #if DEBUG
-    Point *p = new Point();
-    Point *pt2 = new Point();
+    // Point *p = new Point();
+    // Point *pt2 = new Point();
+    Point* p = (Point*)malloc(sizeof(Point));
+    Point* pt2 = (Point*)malloc(sizeof(Point));
 	for (int i = 0; i < n; ++i) 
 		for (int j = i+1; j < n; ++j){
             comparaciones += 1;
@@ -92,7 +94,8 @@ ClosestPoint* bruteForce(Point P[], int n, ull &comparaciones)
                 *pt2 = P[j];
             }
         }
-    ClosestPoint *c = new ClosestPoint();
+    // ClosestPoint *c = new ClosestPoint();
+    ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
     
     // p->x = p1.x;
     // p->y = p1.y;
@@ -112,7 +115,8 @@ ClosestPoint* bruteForce(Point P[], int n, ull &comparaciones)
 				min = distSquared(P[i], P[j]);
             }
         }
-    ClosestPoint *c = new ClosestPoint();
+    // ClosestPoint *c = new ClosestPoint();
+    ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
     c->distance = min;
     c->comparaciones = comparaciones;
     return c;

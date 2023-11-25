@@ -7,35 +7,58 @@ typedef unsigned long long ull;
 #define DEBUG false
 
 // A structure to represent a Point in 2D plane 
-class Point 
-{ 
-	public:
-	float x, y; 
+// class Point 
+// { 
+// 	public:
+// 	float x, y; 
 
-    friend std::ostream& operator<<(std::ostream& os, const Point& p);
-};
+//     friend std::ostream& operator<<(std::ostream& os, const Point& p);
+// };
+// A structure to represent a Point in 2D plane
+typedef struct Point{
+    float x, y;
+} Point;
+
+std::ostream& operator<<(std::ostream& os, const Point& p);
+
+
 
 #if DEBUG
-class ClosestPoint
-{
-    public:
+// class ClosestPoint
+// {
+//     public:
+//     Point *p1, *p2;
+//     float distance;
+//     ull comparaciones;
+//     double tiempo;
+
+//     friend std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
+// };
+typedef struct ClosestPoint{
     Point *p1, *p2;
     float distance;
     ull comparaciones;
     double tiempo;
+} ClosestPoint;
 
-    friend std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
-};
+std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
 #else
-class ClosestPoint
-{
-    public:
+// class ClosestPoint
+// {
+//     public:
+//     float distance;
+//     ull comparaciones;
+//     double tiempo;
+
+//     friend std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
+// };
+typedef struct ClosestPoint{
     float distance;
     ull comparaciones;
     double tiempo;
+} ClosestPoint;
 
-    friend std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
-};
+std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
 #endif
 
 void fprintf(FILE *out, const ClosestPoint& p);
