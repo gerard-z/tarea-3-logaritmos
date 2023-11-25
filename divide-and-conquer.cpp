@@ -26,12 +26,13 @@ ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d, ull &compar
 	// Pick all points one by one and try the next points till the difference 
 	// between y coordinates is smaller than d. 
 	// This is a proven fact that this loop runs at most 6 times
+	#if DEBUG
 	Point p1 = *(d.p1), p2 = *(d.p2);
 	for (int i = 0; i < size; ++i) 
 		for (int j = i+1; j < size && (strip[j].y - strip[i].y) < min; ++j) {
 			comparaciones += 1;
-			if (dist(strip[i],strip[j]) < min){
-				min = dist(strip[i], strip[j]);
+			if (distSquared(strip[i],strip[j]) < min){
+				min = distSquared(strip[i], strip[j]);
 				p1 = strip[i];
 				p2 = strip[j];
 			}
@@ -49,6 +50,20 @@ ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d, ull &compar
 	c->comparaciones = comparaciones;
 	free(strip);
 	return *c;
+	#else
+	for (int i = 0; i < size; ++i) 
+		for (int j = i+1; j < size && (strip[j].y - strip[i].y) < min; ++j) {
+			comparaciones += 1;
+			if (distSquared(strip[i],strip[j]) < min){
+				min = distSquared(strip[i], strip[j]);
+			}
+		}
+	ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
+	c->distance = min;
+	c->comparaciones = comparaciones;
+	free(strip);
+	return *c;
+	#endif
 } 
 
 // A recursive function to find the 

@@ -5,7 +5,6 @@
 using namespace std;
 using namespace std::chrono;
 
-#define DEBUG false
 #define PRINT true
 
 Point* generarPuntos(int n) {
@@ -184,11 +183,12 @@ void printArrayPoints(Point P[], int n){
 
 int main(){
     // FILE *out = fopen("resultados.txt", "w+");
-    int nMin = 50'000, nMax= 500'000, nStep = 50'000, k = 10;
+    //int nMin = 5'000'000, nMax= 50'000'000, nStep = 5'000'000, k = 100;
+    int nMin = 500, nMax= 5000, nStep = 500, k = 10;
     // int n = (nMax - nMin) / nStep + 1;
-    ClosestPoint ***resultados = experimento(nMin, nMax, nStep, k, closestDivide, closestDivide);
+    ClosestPoint ***resultados = experimento(nMin, nMax, nStep, k, bruteForce, closestDivide);
     free(resultados);
-    ClosestPoint ***resultados2 = experimentoRandom(nMin, nMax, nStep, k, closestDivide, closestDivide);
+    ClosestPoint ***resultados2 = experimentoRandom(nMin, nMax, nStep, k, bruteForce, closestDivide);
     free(resultados2);
 
 

@@ -4,6 +4,7 @@
 #include <iostream>
 
 typedef unsigned long long ull;
+#define DEBUG false
 
 // A structure to represent a Point in 2D plane 
 class Point 
@@ -14,6 +15,7 @@ class Point
     friend std::ostream& operator<<(std::ostream& os, const Point& p);
 };
 
+#if DEBUG
 class ClosestPoint
 {
     public:
@@ -24,6 +26,17 @@ class ClosestPoint
 
     friend std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
 };
+#else
+class ClosestPoint
+{
+    public:
+    float distance;
+    ull comparaciones;
+    double tiempo;
+
+    friend std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
+};
+#endif
 
 void fprintf(FILE *out, const ClosestPoint& p);
 
@@ -37,6 +50,8 @@ int compareY(const void* a, const void* b);
 // A utility function to find the 
 // distance between two points 
 float dist(Point p1, Point p2);
+
+float distSquared(Point p1, Point p2);
 
 // A Brute Force method to return the 
 // smallest distance between two points 
