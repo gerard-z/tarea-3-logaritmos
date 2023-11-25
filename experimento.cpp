@@ -30,8 +30,7 @@ void probarAlgoritmo(FILE *out, Point P[], int n, int k, ClosestPoint* (*algorit
     for (int i = 0; i < k; i++) {
         comparaciones = 0;
         Point *P_copy = new Point[n];
-        cout << sizeof(P_copy)*n << " " << sizeof(Point) << endl;
-        copy(P, P + n, P_copy);
+        memcpy(P_copy, P, n * sizeof(Point));
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
         ClosestPoint *resultado = algoritmo(P_copy, n, comparaciones);
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
@@ -47,7 +46,7 @@ void probarAlgoritmo(FILE *out, Point P[], int n, int k, ClosestPoint* (*algorit
         fprintf(out, *resultado);
         #endif
         #if !SAVE
-        free(resultado);
+        delete resultado;
         #endif
     }
     #if PRINT
@@ -93,6 +92,7 @@ ClosestPoint**** experimento(int nMin, int nMax, int nStep, int k, ClosestPoint*
         delete[] tiemposActual;
         delete[] tiemposActual2;
     }
+    fclose(out);
     ClosestPoint**** tiemposTotales = new ClosestPoint***[2];
     tiemposTotales[0] = tiempos;
     tiemposTotales[1] = tiempos2;
@@ -119,6 +119,7 @@ void experimento(int nMin, int nMax, int nStep, int k, ClosestPoint* (*algoritmo
         #endif
         delete[] puntos;
     }
+    fclose(out);
 }
 #endif
 
@@ -135,7 +136,7 @@ void pruebaAlgoritmoRandom(FILE *out, int n, int k, ClosestPoint* (*algoritmo)(P
     for (int i = 0; i < k; i++) {
         Point* P = generarPuntos(n);
         Point *P_copy = new Point[n];
-        copy(P, P + n, P_copy);
+        memcpy(P_copy, P, n * sizeof(Point));
         comparaciones = 0;
         comparaciones2 = 0;
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
@@ -164,8 +165,8 @@ void pruebaAlgoritmoRandom(FILE *out, int n, int k, ClosestPoint* (*algoritmo)(P
         fprintf(out, *resultado2);
         #endif
         #if !SAVE
-        free(resultado1);
-        free(resultado2);
+        delete resultado1;
+        delete resultado2;
         #endif
     }
     #if PRINT
@@ -214,6 +215,7 @@ ClosestPoint**** experimentoRandom(int nMin, int nMax, int nStep, int k, Closest
         delete[] tiemposActual[1];
         delete[] tiemposActual;
     }
+    fclose(out);
     ClosestPoint**** tiemposTotales = new ClosestPoint***[2];
     tiemposTotales[0] = tiempos;
     tiemposTotales[1] = tiempos2;
@@ -234,6 +236,7 @@ void experimentoRandom(int nMin, int nMax, int nStep, int k, ClosestPoint* (*alg
         fprintf(out, "\n###################################\n");
         #endif
     }
+    fclose(out);
 }
 #endif
 
@@ -246,9 +249,8 @@ void printArrayPoints(Point P[], int n){
 }
 
 int main(){
-    // FILE *out = fopen("resultados.txt", "w+");
-    // int nMin = 5'000'000, nMax= 50'000'000, nStep = 5'000'000, k = 100;
-    int nMin = 500, nMax= 5000, nStep = 500, k = 10;
+    int nMin = 5'000'000, nMax= 50'000'000, nStep = 5'000'000, k = 100;
+    // int nMin = 500, nMax= 5000, nStep = 500, k = 10;
     // int n = (nMax - nMin) / nStep + 1;
     #if SAVE
     ClosestPoint ****resultados = experimento(nMin, nMax, nStep, k, bruteForce, closestDivide);
@@ -256,60 +258,8 @@ int main(){
     ClosestPoint ****resultados2 = experimentoRandom(nMin, nMax, nStep, k, bruteForce, closestDivide);
     delete[] resultados2;
     #else
-    experimento(nMin, nMax, nStep, k, bruteForce, closestDivide);
-    experimentoRandom(nMin, nMax, nStep, k, bruteForce, closestDivide);
+    experimento(nMin, nMax, nStep, k, closestDivide, closestDivide);
+    experimentoRandom(nMin, nMax, nStep, k, closestDivide, closestDivide);
     #endif
-
-
-    // ClosestPoint **resultadosAlgoritmo1 = resultados[0];
-    // ClosestPoint **resultadosAlgoritmo2 = resultados[1];
-    // int comp_promedio;
-    // double tiempo_promedio;
-    // ClosestPoint resultado;
-    // for (int i = 0; i < n; i++) {
-    //     comp_promedio = 0;
-    //     tiempo_promedio = 0;
-    //     int n_i = nMin + i*nStep;
-    //     cout << "n = " << n_i << endl;
-    //     Point* P = generarPuntos(n_i);
-    //     // printArrayPoints(P, n_i);
-    //     // cout << "Brute force ind:" << *probarAlgoritmo(P, n_i, 1, bruteForce) << "\n";
-    //     // cout << "Divide and conquer ind:" << *probarAlgoritmo(P, n_i, 1, closestDivide) << "\n";
-    //     // cout << "Brute force:" << endl;
-    //     fprintf(out, "Brute force:\n");
-    //     for (int j = 0; j < k; j++) {
-    //         resultado = resultadosAlgoritmo1[i][j];
-    //         // cout << resultado << endl;
-    //         fprintf(out, resultado);
-    //         comp_promedio += resultado.comparaciones;
-    //         tiempo_promedio += resultado.tiempo;
-    //     }
-    //     // cout << "Comparaciones promedio: " << comp_promedio / k << endl;
-    //     // cout << "Tiempo promedio: " << tiempo_promedio / k << endl;
-    //     // cout << endl;
-    //     fprintf(out, "Comparaciones promedio: %d\n", comp_promedio / k);
-    //     fprintf(out, "Tiempo promedio: %f\n", tiempo_promedio / k);
-    //     fprintf(out, "\n");
-    //     comp_promedio = 0;
-    //     tiempo_promedio = 0;
-    //     // cout << "Divide and conquer:" << endl;
-    //     fprintf(out, "Divide and conquer:\n");
-    //     for (int j = 0; j < k; j++) {
-    //         resultado = resultadosAlgoritmo2[i][j];
-    //         // cout << resultado << endl;
-    //         fprintf(out, resultado);
-    //         comp_promedio += resultado.comparaciones;
-    //         tiempo_promedio += resultado.tiempo;
-    //     }
-    //     // cout << "Comparaciones promedio: " << comp_promedio / k << endl;
-    //     // cout << "Tiempo promedio: " << tiempo_promedio / k << endl;
-    //     // cout << endl;
-    //     fprintf(out, "Comparaciones promedio: %d\n", comp_promedio / k);
-    //     fprintf(out, "Tiempo promedio: %f\n", tiempo_promedio / k);
-    //     fprintf(out, "\n");
-    //     free(P);
-    //     // printf("############################################\n");
-    //     fprintf(out, "############################################\n");
-    // }
     return 0;
 }

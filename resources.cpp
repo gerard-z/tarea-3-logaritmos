@@ -70,7 +70,8 @@ float distSquared(Point p1, Point p2)
 { 
     return ( (p1.x - p2.x)*(p1.x - p2.x) + 
                 (p1.y - p2.y)*(p1.y - p2.y) 
-            ); 
+            ); // al no hacer la raiz cuadrada, se ahorra tiempo, pero se pierde precision en la distancia pues se compara con el cuadrado de la distancia,
+            // y al ser una comparacion de floats en números entre 0 y 1 (no calcular la raíz vuelve los decimales muy pequeños), se pierde precision.
 }
 
 // A Brute Force method to return the 
@@ -80,8 +81,8 @@ ClosestPoint* bruteForce(Point P[], int n, ull &comparaciones)
 { 
 	float min = numeric_limits<float>::max(); 
     #if DEBUG
-    Point *p = (Point*)malloc(sizeof(Point));
-    Point *pt2 = (Point*)malloc(sizeof(Point));
+    Point *p = new Point();
+    Point *pt2 = new Point();
 	for (int i = 0; i < n; ++i) 
 		for (int j = i+1; j < n; ++j){
             comparaciones += 1;
@@ -91,7 +92,7 @@ ClosestPoint* bruteForce(Point P[], int n, ull &comparaciones)
                 *pt2 = P[j];
             }
         }
-    ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
+    ClosestPoint *c = new ClosestPoint();
     
     // p->x = p1.x;
     // p->y = p1.y;
@@ -111,7 +112,7 @@ ClosestPoint* bruteForce(Point P[], int n, ull &comparaciones)
 				min = distSquared(P[i], P[j]);
             }
         }
-    ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
+    ClosestPoint *c = new ClosestPoint();
     c->distance = min;
     c->comparaciones = comparaciones;
     return c;

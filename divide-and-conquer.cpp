@@ -37,12 +37,12 @@ ClosestPoint* stripClosest(Point strip[], int size, ClosestPoint* d, ull &compar
 				p2 = strip[j];
 			}
 		}
-	ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
-	Point *p = (Point*)malloc(sizeof(Point));
+	ClosestPoint *c = new ClosestPoint();
+	Point *p = new Point();
 	p->x = p1.x;
 	p->y = p1.y;
 	c->p1 = p;
-	Point *pt2 = (Point*)malloc(sizeof(Point));
+	Point *pt2 = new Point();
 	pt2->x = p2.x;
 	pt2->y = p2.y;
 	c->p2 = pt2;
@@ -58,7 +58,7 @@ ClosestPoint* stripClosest(Point strip[], int size, ClosestPoint* d, ull &compar
 				min = distSquared(strip[i], strip[j]);
 			}
 		}
-	ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
+	ClosestPoint *c = new ClosestPoint();
 	c->distance = min;
 	c->comparaciones = comparaciones;
 	delete[] strip;
