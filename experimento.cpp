@@ -6,6 +6,7 @@ using namespace std;
 using namespace std::chrono;
 
 #define DEBUG false
+#define PRINT true
 
 Point* generarPuntos(int n) {
     Point* puntos = (Point*)malloc(n * sizeof(Point));
@@ -19,9 +20,10 @@ Point* generarPuntos(int n) {
     return puntos;
 }
 
-ClosestPoint* probarAlgoritmo(Point P[], int n, int k, ClosestPoint& (*algoritmo)(Point[], int, int&)){
+ClosestPoint* probarAlgoritmo(FILE *out, Point P[], int n, int k, ClosestPoint& (*algoritmo)(Point[], int, ull&)){
     ClosestPoint* tiempos = (ClosestPoint*)malloc(k * sizeof(ClosestPoint));
-    int comparaciones;
+    ull comparaciones, comparaciones_promedio = 0;
+    double tiempo_promedio = 0;
     for (int i = 0; i < k; i++) {
         comparaciones = 0;
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
@@ -30,17 +32,29 @@ ClosestPoint* probarAlgoritmo(Point P[], int n, int k, ClosestPoint& (*algoritmo
         double tiempo = duration_cast<duration<double>>(t2 - t1).count();
         resultado.tiempo = tiempo;
         tiempos[i] = resultado;
+        comparaciones_promedio += comparaciones;
+        tiempo_promedio += tiempo;
         #if DEBUG
         cout << "Resultado "<< i+1 << " : " << resultado << endl;
         #endif
+        #if PRINT
+        fprintf(out, resultado);
+        #endif
     }
+    #if PRINT
+    comparaciones_promedio /= k;
+    tiempo_promedio /= k;
+    fprintf(out, "Comparaciones promedio: %lld\n", comparaciones_promedio);
+    fprintf(out, "Tiempo promedio: %f\n", tiempo_promedio);
+    #endif
     return tiempos;
 }
 
-ClosestPoint*** experimento(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algoritmo)(Point[], int, int&), ClosestPoint& (*algoritmo2)(Point[], int, int&)){
+ClosestPoint*** experimento(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algoritmo)(Point[], int, ull&), ClosestPoint& (*algoritmo2)(Point[], int, ull&)){
     int n = (nMax - nMin) / nStep + 1;
     ClosestPoint** tiempos = new ClosestPoint*[n];
     ClosestPoint** tiempos2 = new ClosestPoint*[n];
+    FILE *out = fopen("resultados_experimento.txt", "w+");
     for (int i = 0; i < n; i++) {
         tiempos[i] = new ClosestPoint[k];
         tiempos2[i] = new ClosestPoint[k];
@@ -48,8 +62,18 @@ ClosestPoint*** experimento(int nMin, int nMax, int nStep, int k, ClosestPoint& 
     for (int i = 0; i < n; i++) {
         int nActual = nMin + i * nStep;
         Point* puntos = generarPuntos(nActual);
-        ClosestPoint* tiemposActual = probarAlgoritmo(puntos, nActual, k, algoritmo);
-        ClosestPoint* tiemposActual2 = probarAlgoritmo(puntos, nActual, k, algoritmo2);
+        #if PRINT
+        fprintf(out, "n = %d\n", nActual);
+        fprintf(out, "Algoritmo 1:\n");
+        #endif
+        ClosestPoint* tiemposActual = probarAlgoritmo(out, puntos, nActual, k, algoritmo);
+        #if PRINT
+        fprintf(out, "Algoritmo 2:\n");
+        #endif
+        ClosestPoint* tiemposActual2 = probarAlgoritmo(out, puntos, nActual, k, algoritmo2);
+        #if PRINT
+        fprintf(out, "\n###################################\n");
+        #endif
         for (int j = 0; j < k; j++) {
             tiempos[i][j] = tiemposActual[j];
             tiempos2[i][j] = tiemposActual2[j];
@@ -64,10 +88,10 @@ ClosestPoint*** experimento(int nMin, int nMax, int nStep, int k, ClosestPoint& 
     return tiemposTotales;
 }
 
-ClosestPoint** pruebaAlgoritmoRandom(int n, int k, ClosestPoint& (*algoritmo)(Point[], int, int&), ClosestPoint& (*algoritmo2)(Point[], int, int&)){
+ClosestPoint** pruebaAlgoritmoRandom(int n, int k, ClosestPoint& (*algoritmo)(Point[], int, ull&), ClosestPoint& (*algoritmo2)(Point[], int, ull&)){
     ClosestPoint* tiempos = new ClosestPoint[k];
     ClosestPoint* tiempos2 = new ClosestPoint[k];
-    int comparaciones, comparaciones2;
+    ull comparaciones, comparaciones2;
     for (int i = 0; i < k; i++) {
         Point* P = generarPuntos(n);
         comparaciones = 0;
@@ -89,7 +113,7 @@ ClosestPoint** pruebaAlgoritmoRandom(int n, int k, ClosestPoint& (*algoritmo)(Po
     return tiemposTotales;
 }
 
-ClosestPoint*** experimentoRandom(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algoritmo)(Point[], int, int&), ClosestPoint& (*algoritmo2)(Point[], int, int&)){
+ClosestPoint*** experimentoRandom(int nMin, int nMax, int nStep, int k, ClosestPoint& (*algoritmo)(Point[], int, ull&), ClosestPoint& (*algoritmo2)(Point[], int, ull&)){
     int n = (nMax - nMin) / nStep + 1;
     ClosestPoint** tiempos = new ClosestPoint*[n];
     ClosestPoint** tiempos2 = new ClosestPoint*[n];
@@ -123,26 +147,60 @@ void printArrayPoints(Point P[], int n){
 }
 
 int main(){
-    // int n = 1'000;
-    // Point* P = generarPuntos(n);
-    // printArrayPoints(P, n);
-    // cout << "Brute force:" << "\n";
-    // probarAlgoritmo(P, n, 10, bruteForce);
-    // cout << "Divide and conquer:" << "\n";
-    // probarAlgoritmo(P, n, 10, closestDivide);
-    ClosestPoint ***resultados = experimento(5'000, 50'000, 5'000, 10, bruteForce, closestDivide);
-    ClosestPoint **resultadosBruteForce = resultados[0];
-    ClosestPoint **resultadosDivideAndConquer = resultados[1];
-    for (int i = 0; i < 10; i++) {
-        cout << "n = " << 5 + i * 5 << endl;
-        cout << "Brute force:" << endl;
-        for (int j = 0; j < 10; j++) {
-            cout << resultadosBruteForce[i][j] << endl;
-        }
-        cout << "Divide and conquer:" << endl;
-        for (int j = 0; j < 10; j++) {
-            cout << resultadosDivideAndConquer[i][j] << endl;
-        }
-    }
+    // FILE *out = fopen("resultados.txt", "w+");
+    int nMin = 500, nMax= 5000, nStep = 500, k = 10;
+    // int n = (nMax - nMin) / nStep + 1;
+    ClosestPoint ***resultados = experimento(nMin, nMax, nStep, k, bruteForce, closestDivide);
+    free(resultados);
+    // ClosestPoint **resultadosAlgoritmo1 = resultados[0];
+    // ClosestPoint **resultadosAlgoritmo2 = resultados[1];
+    // int comp_promedio;
+    // double tiempo_promedio;
+    // ClosestPoint resultado;
+    // for (int i = 0; i < n; i++) {
+    //     comp_promedio = 0;
+    //     tiempo_promedio = 0;
+    //     int n_i = nMin + i*nStep;
+    //     cout << "n = " << n_i << endl;
+    //     Point* P = generarPuntos(n_i);
+    //     // printArrayPoints(P, n_i);
+    //     // cout << "Brute force ind:" << *probarAlgoritmo(P, n_i, 1, bruteForce) << "\n";
+    //     // cout << "Divide and conquer ind:" << *probarAlgoritmo(P, n_i, 1, closestDivide) << "\n";
+    //     // cout << "Brute force:" << endl;
+    //     fprintf(out, "Brute force:\n");
+    //     for (int j = 0; j < k; j++) {
+    //         resultado = resultadosAlgoritmo1[i][j];
+    //         // cout << resultado << endl;
+    //         fprintf(out, resultado);
+    //         comp_promedio += resultado.comparaciones;
+    //         tiempo_promedio += resultado.tiempo;
+    //     }
+    //     // cout << "Comparaciones promedio: " << comp_promedio / k << endl;
+    //     // cout << "Tiempo promedio: " << tiempo_promedio / k << endl;
+    //     // cout << endl;
+    //     fprintf(out, "Comparaciones promedio: %d\n", comp_promedio / k);
+    //     fprintf(out, "Tiempo promedio: %f\n", tiempo_promedio / k);
+    //     fprintf(out, "\n");
+    //     comp_promedio = 0;
+    //     tiempo_promedio = 0;
+    //     // cout << "Divide and conquer:" << endl;
+    //     fprintf(out, "Divide and conquer:\n");
+    //     for (int j = 0; j < k; j++) {
+    //         resultado = resultadosAlgoritmo2[i][j];
+    //         // cout << resultado << endl;
+    //         fprintf(out, resultado);
+    //         comp_promedio += resultado.comparaciones;
+    //         tiempo_promedio += resultado.tiempo;
+    //     }
+    //     // cout << "Comparaciones promedio: " << comp_promedio / k << endl;
+    //     // cout << "Tiempo promedio: " << tiempo_promedio / k << endl;
+    //     // cout << endl;
+    //     fprintf(out, "Comparaciones promedio: %d\n", comp_promedio / k);
+    //     fprintf(out, "Tiempo promedio: %f\n", tiempo_promedio / k);
+    //     fprintf(out, "\n");
+    //     free(P);
+    //     // printf("############################################\n");
+    //     fprintf(out, "############################################\n");
+    // }
     return 0;
 }
