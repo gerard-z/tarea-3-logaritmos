@@ -17,7 +17,7 @@ using namespace std;
 // Note that this method seems to be 
 // a O(n^2) method, but it's a O(n) 
 // method as the inner loop runs at most 6 times 
-ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d, int &comparaciones) 
+ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d, ull &comparaciones) 
 { 
 	float min = d.distance; // Initialize the minimum distance as d
 
@@ -54,7 +54,7 @@ ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d, int &compar
 // A recursive function to find the 
 // smallest distance. The array P contains 
 // all points sorted according to x coordinate 
-ClosestPoint& closestUtil(Point P[], int n, int &comparaciones) 
+ClosestPoint& closestUtil(Point P[], int n, ull &comparaciones) 
 {
 	// If there are 2 or 3 points, then use brute force 
 	if (n <= 3) 
@@ -94,7 +94,7 @@ ClosestPoint& closestUtil(Point P[], int n, int &comparaciones)
 
 // The main function that finds the smallest distance 
 // This method mainly uses closestUtil() 
-ClosestPoint& closestDivide(Point P[], int n, int &comparaciones) 
+ClosestPoint& closestDivide(Point P[], int n, ull &comparaciones) 
 { 
 	qsort(P, n, sizeof(Point), compareX);
 

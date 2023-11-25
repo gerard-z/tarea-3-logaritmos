@@ -57,7 +57,7 @@ float dist(Point p1, Point p2)
 // A Brute Force method to return the 
 // smallest distance between two points 
 // in P[] of size n 
-ClosestPoint& bruteForce(Point P[], int n, int &comparaciones) 
+ClosestPoint& bruteForce(Point P[], int n, ull &comparaciones) 
 { 
 	float min = numeric_limits<float>::max(); 
     Point p1, p2;

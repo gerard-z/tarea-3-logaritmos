@@ -3,6 +3,8 @@
 #include "limits.h"
 #include <iostream>
 
+typedef unsigned long long ull;
+
 // A structure to represent a Point in 2D plane 
 class Point 
 { 
@@ -39,7 +41,7 @@ float dist(Point p1, Point p2);
 // A Brute Force method to return the 
 // smallest distance between two points 
 // in P[] of size n 
-ClosestPoint& bruteForce(Point P[], int n, int &comparaciones);
+ClosestPoint& bruteForce(Point P[], int n, ull &comparaciones);
 
 // A utility function to find 
 // minimum of two float values 
