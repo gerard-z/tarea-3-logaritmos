@@ -17,9 +17,9 @@ using namespace std;
 // Note that this method seems to be 
 // a O(n^2) method, but it's a O(n) 
 // method as the inner loop runs at most 6 times 
-ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d, ull &comparaciones) 
+ClosestPoint* stripClosest(Point strip[], int size, ClosestPoint* d, ull &comparaciones) 
 { 
-	float min = d.distance; // Initialize the minimum distance as d
+	float min = d->distance; // Initialize the minimum distance as d
 
 	qsort(strip, size, sizeof(Point), compareY); 
 
@@ -27,7 +27,7 @@ ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d, ull &compar
 	// between y coordinates is smaller than d. 
 	// This is a proven fact that this loop runs at most 6 times
 	#if DEBUG
-	Point p1 = *(d.p1), p2 = *(d.p2);
+	Point p1 = *(d->p1), p2 = *(d->p2);
 	for (int i = 0; i < size; ++i) 
 		for (int j = i+1; j < size && (strip[j].y - strip[i].y) < min; ++j) {
 			comparaciones += 1;
@@ -48,8 +48,8 @@ ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d, ull &compar
 	c->p2 = pt2;
 	c->distance = min;
 	c->comparaciones = comparaciones;
-	free(strip);
-	return *c;
+	delete[] strip;
+	return c;
 	#else
 	for (int i = 0; i < size; ++i) 
 		for (int j = i+1; j < size && (strip[j].y - strip[i].y) < min; ++j) {
@@ -61,15 +61,15 @@ ClosestPoint& stripClosest(Point strip[], int size, ClosestPoint &d, ull &compar
 	ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
 	c->distance = min;
 	c->comparaciones = comparaciones;
-	free(strip);
-	return *c;
+	delete[] strip;
+	return c;
 	#endif
 } 
 
 // A recursive function to find the 
 // smallest distance. The array P contains 
 // all points sorted according to x coordinate 
-ClosestPoint& closestUtil(Point P[], int n, ull &comparaciones) 
+ClosestPoint* closestUtil(Point P[], int n, ull &comparaciones) 
 {
 	// If there are 2 or 3 points, then use brute force 
 	if (n <= 3) 
@@ -83,21 +83,21 @@ ClosestPoint& closestUtil(Point P[], int n, ull &comparaciones)
 	// through the middle point calculate 
 	// the smallest distance dl on left 
 	// of middle point and dr on right side 
-	ClosestPoint dl = closestUtil(P, mid, comparaciones); 
-	ClosestPoint dr = closestUtil(P + mid, n - mid, comparaciones); 
+	ClosestPoint* dl = closestUtil(P, mid, comparaciones); 
+	ClosestPoint* dr = closestUtil(P + mid, n - mid, comparaciones); 
 
 	// Find the smaller of two distances 
-	ClosestPoint d = min(dl, dr);
+	ClosestPoint* d = min(dl, dr);
 	comparaciones += 1;
 
 	// Build an array strip[] that contains 
 	// points close (closer than d) 
 	// to the line passing through the middle point 
-	Point* strip = (Point*)malloc(n * sizeof(Point)); 
+	Point* strip = new Point[n];
 	int j = 0; 
 	for (int i = 0; i < n; i++) {
 		comparaciones += 1;
-		if (abs(P[i].x - midPoint.x) < d.distance) 
+		if (abs(P[i].x - midPoint.x) < d->distance) 
 			strip[j] = P[i], j++;
 	} 
 
@@ -109,7 +109,7 @@ ClosestPoint& closestUtil(Point P[], int n, ull &comparaciones)
 
 // The main function that finds the smallest distance 
 // This method mainly uses closestUtil() 
-ClosestPoint& closestDivide(Point P[], int n, ull &comparaciones) 
+ClosestPoint* closestDivide(Point P[], int n, ull &comparaciones) 
 { 
 	qsort(P, n, sizeof(Point), compareX);
 

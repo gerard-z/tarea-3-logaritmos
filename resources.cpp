@@ -76,32 +76,33 @@ float distSquared(Point p1, Point p2)
 // A Brute Force method to return the 
 // smallest distance between two points 
 // in P[] of size n 
-ClosestPoint& bruteForce(Point P[], int n, ull &comparaciones) 
+ClosestPoint* bruteForce(Point P[], int n, ull &comparaciones) 
 { 
 	float min = numeric_limits<float>::max(); 
     #if DEBUG
-    Point p1, p2;
+    Point *p = (Point*)malloc(sizeof(Point));
+    Point *pt2 = (Point*)malloc(sizeof(Point));
 	for (int i = 0; i < n; ++i) 
 		for (int j = i+1; j < n; ++j){
             comparaciones += 1;
 			if (distSquared(P[i], P[j]) < min){
 				min = distSquared(P[i], P[j]); 
-                p1 = P[i];
-                p2 = P[j];
+                *p = P[i];
+                *pt2 = P[j];
             }
         }
     ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
-    Point *p = (Point*)malloc(sizeof(Point));
-    p->x = p1.x;
-    p->y = p1.y;
+    
+    // p->x = p1.x;
+    // p->y = p1.y;
     c->p1 = p;
-    Point *pt2 = (Point*)malloc(sizeof(Point));
-    pt2->x = p2.x;
-    pt2->y = p2.y;
+    
+    // pt2->x = p2.x;
+    // pt2->y = p2.y;
     c->p2 = pt2;
     c->distance = min;
     c->comparaciones = comparaciones;
-	return *c;
+	return c;
     #else
     for (int i = 0; i < n; ++i) 
 		for (int j = i+1; j < n; ++j){
@@ -113,13 +114,13 @@ ClosestPoint& bruteForce(Point P[], int n, ull &comparaciones)
     ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
     c->distance = min;
     c->comparaciones = comparaciones;
-    return *c;
+    return c;
     #endif
 } 
 
 // A utility function to find 
 // minimum distance between the closest points 
-ClosestPoint& min(ClosestPoint &x, ClosestPoint &y) 
+ClosestPoint* min(ClosestPoint* x, ClosestPoint* y) 
 { 
-	return (x.distance < y.distance)? x : y; 
+	return (x->distance < y->distance)? x : y; 
 } 

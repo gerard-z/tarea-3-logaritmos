@@ -4,7 +4,7 @@
 #include <iostream>
 
 typedef unsigned long long ull;
-#define DEBUG false
+#define DEBUG true
 
 // A structure to represent a Point in 2D plane 
 class Point 
@@ -21,7 +21,7 @@ class ClosestPoint
     public:
     Point *p1, *p2;
     float distance;
-    int comparaciones;
+    ull comparaciones;
     double tiempo;
 
     friend std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
@@ -56,8 +56,8 @@ float distSquared(Point p1, Point p2);
 // A Brute Force method to return the 
 // smallest distance between two points 
 // in P[] of size n 
-ClosestPoint& bruteForce(Point P[], int n, ull &comparaciones);
+ClosestPoint* bruteForce(Point P[], int n, ull &comparaciones);
 
 // A utility function to find 
 // minimum of two float values 
-ClosestPoint& min(ClosestPoint &x, ClosestPoint &y);
+ClosestPoint* min(ClosestPoint* x, ClosestPoint* y);
