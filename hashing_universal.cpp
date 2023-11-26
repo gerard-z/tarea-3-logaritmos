@@ -58,6 +58,11 @@ typedef struct {
     int x, y;
 } Point;
 
+
+float distance(Point p1, Point p2) {
+    return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
+}
+
 // Imprimir punto
 void printPoint(Point p) {
     cout << "(" << p.x << ", " << p.y << ")";
@@ -94,6 +99,16 @@ List *createList(Point p) {
     newNode->p = p;
     newNode->next = NULL;
     return newNode;
+}
+
+// Libera la memoria de la lista
+void destroyList(List *head) {
+    List *current = head;
+    while (current != NULL) {
+        List *next = current->next;
+        free(current);
+        current = next;
+    }
 }
 
 // Añade un elemento a la lista
@@ -146,6 +161,25 @@ HashTable *createHashTable(int d) {
     return tabla;
 }
 
+// Libera la memoria de la tabla
+void destroyHashTable(HashTable *tabla) {
+    for (int i = 0; i < tabla->realSize; i++) {
+        for (int j = 0; j < tabla->realSize; j++) {
+            // Liberar cada lista
+            List *head = (List *) tabla->table[i][j].ptr;
+            if (head != NULL) {
+                destroyList(head);
+            }
+        }
+        // Liberar cada fila
+        free(tabla->table[i]);
+    }
+    // Liberar la tabla
+    free(tabla->table);
+    free(tabla);
+}
+
+
 // Añade un elemento a la tabla
 void addHashTable(HashTable *tabla, Point p, HashU *f) {
     Point pHashed = applyPointHashU(f, p);
@@ -163,6 +197,63 @@ void addHashTable(HashTable *tabla, Point p, HashU *f) {
     }
 }
 
+// Minima distancia entre un punto a los puntos de sus 8 casillas vecinas (incluyendose a si mismo)
+void minDistanceCell(HashTable *tabla, Point p, int x_i, int y_i, int k, int size, float *minDistance) { // k es la profundidad en la LinkedList
+    // Casillas vecinas a comparar, las demas son irrelevantes, pues las demas comparaciones ya las consideran.
+    int dx[] = {0, 1, -1, 0, 1}; 
+    int dy[] = {0, 0, -1, -1, -1};
+
+    int selfCell = 1; // Si la casilla es la misma que la del punto
+    
+    for (int i = 0; i < 5; i++) {
+        int x = x_i + dx[i];
+        int y = y_i + dy[i];
+
+
+        if (x >= 0 && x < size && y >= 0 && y < size) { // Si la casilla vecina esta dentro de la tabla
+            List *head = (List *) tabla->table[x][y].ptr; // Lista de la casilla vecina
+
+            int k_i = 0; // Profundidad en la lista
+
+            while (head != NULL) { // Recorre la lista
+                if (k_i++ < k && selfCell) // Si no se ha llegado a la profundidad k, las profundidades menores ya se compararon en la misma casilla
+                    continue; // a su vez se post incrementa k_i
+
+                Point p2 = head->p; // Punto k_i de la lista
+                float d = distance(p, head->p); // Distancia entre el punto y el punto k_i de la lista
+                if (d < *minDistance) { // Si la distancia es menor que la minima distancia
+                    *minDistance = d; // Se actualiza la minima distancia
+                }
+                head = head->next; // Siguiente punto de la lista
+            }
+        if (selfCell)
+            selfCell = 0;
+        }
+    }
+}
+
+
+
+// Comparar minima distancia de cada punto con sus 8 vecinos y casilla propia
+float nMinDistance(HashTable *tabla){
+    float minDistance; // Valor de retorno
+    int size = tabla->realSize; // Tamaño de la tabla
+
+    for (int i = 0; i < size; i++) { // Recorre filas
+        for (int j = 0; j < size; j++) { // Recorre columnas
+            List *head = (List *) tabla->table[i][j].ptr; // Lista de la posicion actual
+            int k = 0; // Profundidad en la lista
+            while (head != NULL) { // Si la lista no esta vacia
+                Point p = head->p; // Primer punto de la lista
+                minDistanceCell(tabla, p, i, j, k, size, &minDistance); // Se calcula la minima distancia del punto con sus 8 vecinos
+                head = head->next; // Siguiente punto de la lista
+                k++; // Se incrementa k
+            }
+        }
+    }
+
+    return minDistance;
+}
 
 
 int main() {
