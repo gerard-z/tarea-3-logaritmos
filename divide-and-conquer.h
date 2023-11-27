@@ -18,7 +18,7 @@ using namespace std;
 // Note that this method seems to be 
 // a O(n^2) method, but it's a O(n) 
 // method as the inner loop runs at most 6 times 
-ClosestPoint* stripClosest(Point strip[], int size, ClosestPoint &d, ull &comparaciones);
+ClosestPoint* stripClosest(Point strip[], int size, ClosestPoint* d, ull &comparaciones);
 
 // A recursive function to find the 
 // smallest distance. The array P contains 

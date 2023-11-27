@@ -20,6 +20,7 @@ using namespace std;
 ClosestPoint* stripClosest(Point strip[], int size, ClosestPoint* d, ull &comparaciones) 
 { 
 	float min = d->distance; // Initialize the minimum distance as d
+	float distance;
 
 	qsort(strip, size, sizeof(Point), compareY); 
 
@@ -28,11 +29,12 @@ ClosestPoint* stripClosest(Point strip[], int size, ClosestPoint* d, ull &compar
 	// This is a proven fact that this loop runs at most 6 times
 	#if DEBUG
 	Point p1 = *(d->p1), p2 = *(d->p2);
-	for (int i = 0; i < size; ++i)
+	for (int i = 0; i < size-1; ++i)
 		for (int j = i+1; j < size && (strip[j].y - strip[i].y)*(strip[j].y - strip[i].y) < min; ++j) {
 			comparaciones += 1;
-			if (distSquared(strip[i],strip[j]) < min){
-				min = distSquared(strip[i], strip[j]);
+			distance = distSquared(strip[i],strip[j]);
+			if (distance < min){
+				min = distance;
 				p1 = strip[i];
 				p2 = strip[j];
 			}
@@ -103,9 +105,11 @@ ClosestPoint* closestUtil(Point P[], int n, ull &comparaciones)
 	// to the line passing through the middle point 
 	Point* strip = new Point[n];
 	int j = 0; 
+	float distance;
 	for (int i = 0; i < n; i++) {
 		comparaciones += 1;
-		if ((P[i].x - midPoint.x)*(P[i].x - midPoint.x) < d->distance) 
+		distance = P[i].x - midPoint.x;
+		if (distance*distance < d->distance) 
 			strip[j] = P[i], j++;
 	} 
 
