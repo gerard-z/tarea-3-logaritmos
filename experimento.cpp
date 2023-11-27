@@ -27,10 +27,10 @@ Point* generarPuntos(int n) {
 }
 
 void freeArrayPoints(Point P[], int n){
-    for (int i = 0; i < n; i++) {
-        // delete[] P[i];
-        free(&P[i]);
-    }
+    // for (int i = 0; i < n; i++) {
+    //     // delete[] P[i];
+    //     free(&P[i]);
+    // }
     // delete[] P;
     free(P);
 }

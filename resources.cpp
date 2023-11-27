@@ -12,17 +12,17 @@ ostream& operator<<(ostream& os, const Point& p){
 
 #if DEBUG
 ostream& operator<<(ostream& os, const ClosestPoint& p){
-    os << "P1: " << *(p.p1) << " P2: " << *(p.p2) << " Distance: " << p.distance << " Comparaciones: " << p.comparaciones << " Tiempo: " << p.tiempo;
+    os << "P1: " << *(p.p1) << " P2: " << *(p.p2) << " Distance: " << sqrt(p.distance) << " Comparaciones: " << p.comparaciones << " Tiempo: " << p.tiempo;
     return os;
 }
 
 void fprintf(FILE *out, const ClosestPoint& p){
     // (x1, y1), (x2, y2), distance, comparaciones, tiempo
-    fprintf(out, "%f,%f,%f,%f,%f,%lld,%f\n", p.p1->x, p.p1->y, p.p2->x, p.p2->y, p.distance, p.comparaciones, p.tiempo);
+    fprintf(out, "%f,%f,%f,%f,%f,%lld,%f\n", p.p1->x, p.p1->y, p.p2->x, p.p2->y, sqrt(p.distance), p.comparaciones, p.tiempo);
 }
 #else
 ostream& operator<<(ostream& os, const ClosestPoint& p){
-    os << "Distance: " << p.distance << " Comparaciones: " << p.comparaciones << " Tiempo: " << p.tiempo;
+    os << "Distance: " << sqrt(p.distance) << " Comparaciones: " << p.comparaciones << " Tiempo: " << p.tiempo;
     return os;
 }
 
@@ -127,5 +127,10 @@ ClosestPoint* bruteForce(Point P[], int n, ull &comparaciones)
 // minimum distance between the closest points 
 ClosestPoint* min(ClosestPoint* x, ClosestPoint* y) 
 { 
-	return (x->distance < y->distance)? x : y; 
+    if (x->distance < y->distance){
+        free(y);
+        return x; 
+    }
+    free(x);
+    return y; 
 } 

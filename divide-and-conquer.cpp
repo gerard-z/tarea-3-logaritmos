@@ -28,8 +28,8 @@ ClosestPoint* stripClosest(Point strip[], int size, ClosestPoint* d, ull &compar
 	// This is a proven fact that this loop runs at most 6 times
 	#if DEBUG
 	Point p1 = *(d->p1), p2 = *(d->p2);
-	for (int i = 0; i < size; ++i) 
-		for (int j = i+1; j < size && (strip[j].y - strip[i].y) < min; ++j) {
+	for (int i = 0; i < size; ++i)
+		for (int j = i+1; j < size && (strip[j].y - strip[i].y)*(strip[j].y - strip[i].y) < min; ++j) {
 			comparaciones += 1;
 			if (distSquared(strip[i],strip[j]) < min){
 				min = distSquared(strip[i], strip[j]);
@@ -52,10 +52,11 @@ ClosestPoint* stripClosest(Point strip[], int size, ClosestPoint* d, ull &compar
 	c->distance = min;
 	c->comparaciones = comparaciones;
 	delete[] strip;
+	free(d);
 	return c;
 	#else
 	for (int i = 0; i < size; ++i) 
-		for (int j = i+1; j < size && (strip[j].y - strip[i].y) < min; ++j) {
+		for (int j = i+1; j < size && (strip[j].y - strip[i].y)*(strip[j].y - strip[i].y) < min; ++j) {
 			comparaciones += 1;
 			if (distSquared(strip[i],strip[j]) < min){
 				min = distSquared(strip[i], strip[j]);
@@ -66,6 +67,7 @@ ClosestPoint* stripClosest(Point strip[], int size, ClosestPoint* d, ull &compar
 	c->distance = min;
 	c->comparaciones = comparaciones;
 	delete[] strip;
+	free(d);
 	return c;
 	#endif
 } 
@@ -101,7 +103,7 @@ ClosestPoint* closestUtil(Point P[], int n, ull &comparaciones)
 	int j = 0; 
 	for (int i = 0; i < n; i++) {
 		comparaciones += 1;
-		if (abs(P[i].x - midPoint.x) < d->distance) 
+		if ((P[i].x - midPoint.x)*(P[i].x - midPoint.x) < d->distance) 
 			strip[j] = P[i], j++;
 	} 
 
