@@ -4,7 +4,7 @@
 #include <iostream>
 
 typedef unsigned long long ull;
-#define DEBUG false
+#define DEBUG true
 
 // A structure to represent a Point in 2D plane 
 // class Point 

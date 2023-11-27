@@ -52,6 +52,8 @@ ClosestPoint* stripClosest(Point strip[], int size, ClosestPoint* d, ull &compar
 	c->distance = min;
 	c->comparaciones = comparaciones;
 	delete[] strip;
+	free(d->p1);
+	free(d->p2);
 	free(d);
 	return c;
 	#else
