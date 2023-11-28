@@ -1,7 +1,6 @@
 // Experimento, parte general.
 
 #include <iostream>
-#include <random>
 #include <ctime>
 #include <chrono>
 #include <divide-and-conquer.h>

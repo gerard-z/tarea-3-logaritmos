@@ -1,7 +1,6 @@
 // Experimento, parte general.
 
 #include "experimento.h"
-#include <random>
 using namespace std;
 using namespace std::chrono;
 
