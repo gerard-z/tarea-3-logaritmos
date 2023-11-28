@@ -11,6 +11,26 @@ int indiceAleatorio(int n) {
     return distribution(generator);
 }
 
+void findMinDistance(const vector<vector<vector<Point>>> &grid, ClosestPoint *d, Point *p, Point *pt2, const vector<Point> &gij1, const vector<Point> &gij2, ull &comparaciones){
+    int size = gij1.size();
+    int size2 = gij2.size();
+    for(int k=0;k<size;k++){
+        for(int l=0;l<size2;l++){
+            comparaciones += 1;
+            float distance = distSquared(gij1[k],gij2[l]);
+            if(distance < d->distance){
+                d->distance = distance;
+                #if DEBUG
+                *p = gij1[k];
+                *pt2 = gij2[l];
+                d->p1 = p;
+                d->p2 = pt2;
+                #endif
+            }
+        }
+    }
+}
+
 ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     
     //calculo del d mimimo aleatorio
@@ -62,19 +82,19 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
 
     // Se recorren las celdas del plano, y se calcula la distancia entre los puntos de cada celda y los puntos de las celdas vecinas.
     // Se guarda la menor distancia.
-    int size, size2;
     for(int i=0;i<cell_number;i++){
         for(int j=0;j<cell_number;j++){
-            size = grid[i][j].size();
+            vector<Point> gij1 = grid[i][j];
+            int size = gij1.size();
             for(int k=0;k<size;k++){
                 for(int l=k+1;l<size;l++){
                     comparaciones += 1;
-                    float distance = distSquared(grid[i][j][k],grid[i][j][l]);
+                    float distance = distSquared(gij1[k],gij1[l]);
                     if(distance < d->distance){
                         d->distance = distance;
                         #if DEBUG
-                        *p = grid[i][j][k];
-                        *pt2 = grid[i][j][l];
+                        *p = gij1[k];
+                        *pt2 = gij1[l];
                         d->p1 = p;
                         d->p2 = pt2;
                         #endif
@@ -82,60 +102,17 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
                 }
             }
             if (j<cell_number-1){
-                size2 = grid[i][j+1].size();
-                for(int k=0;k<size;k++){
-                    for(int l=0;l<size2;l++){
-                        comparaciones += 1;
-                        float distance = distSquared(grid[i][j][k],grid[i][j+1][l]);
-                        if(distance < d->distance){
-                            d->distance = distance;
-                            #if DEBUG
-                            *p = grid[i][j][k];
-                            *pt2 = grid[i][j+1][l];
-                            d->p1 = p;
-                            d->p2 = pt2;
-                            #endif
-                        }
-                    }
-                }
+                findMinDistance(grid,d,p,pt2,gij1,grid[i][j+1],comparaciones);
+                if (i>0)
+                    findMinDistance(grid,d,p,pt2,gij1,grid[i-1][j+1],comparaciones);
             }
             if (i<cell_number-1){
-                size2 = grid[i+1][j].size();
-                for(int k=0;k<size;k++){
-                    for(int l=0;l<size2;l++){
-                        comparaciones += 1;
-                        float distance = distSquared(grid[i][j][k],grid[i+1][j][l]);
-                        if(distance < d->distance){
-                            d->distance = distance;
-                            #if DEBUG
-                            *p = grid[i][j][k];
-                            *pt2 = grid[i+1][j][l];
-                            d->p1 = p;
-                            d->p2 = pt2;
-                            #endif
-                        }
-                    }
-                }
+                findMinDistance(grid,d,p,pt2,gij1,grid[i+1][j],comparaciones);
             }
             if (i==cell_number-1 || j==cell_number-1){
                 continue;
             }
-            size2 = grid[i+1][j+1].size();
-            for(int k=0;k<size;k++){
-                for(int l=0;l<size2;l++){
-                    comparaciones += 1;
-                    float distance = distSquared(grid[i][j][k],grid[i+1][j+1][l]);
-                    if(distance < d->distance){
-                        d->distance = distance;
-                        #if DEBUG
-                        *p = grid[i][j][k];
-                        *pt2 = grid[i+1][j+1][l];
-                        d->p1 = p;
-                        d->p2 = pt2;
-                        #endif
-                    }
-                }
-            }
+            findMinDistance(grid,d,p,pt2,gij1,grid[i+1][j+1],comparaciones);
         }
     }
 
