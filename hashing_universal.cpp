@@ -1,18 +1,9 @@
-#include <iostream>
-#include <cstdlib>
-#include <cmath>
-#include "random"
-
+#include "hashing_universal.h"
 using namespace std;
 
 //////////////////////////
 /*       Hashing        */
 //////////////////////////
-
-// // Funcion de hash universal 
-typedef struct {
-    int a, b, p, m;
-} HashU;
 
 // Crea una funcion de hash universal
 HashU *createHashU(int a, int b, int p, int m) {
@@ -51,23 +42,6 @@ int createB(int p){
     return rand() % p;
 }
 
-////////////////////////
- /*      Punto        */
-////////////////////////
-typedef struct {
-    int x, y;
-} Point;
-
-
-float distance(Point p1, Point p2) {
-    return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
-}
-
-// Imprimir punto
-void printPoint(Point p) {
-    cout << "(" << p.x << ", " << p.y << ")";
-}
-
 // Aplica la funcion de hash a un punto
 Point applyPointHashU(HashU *f, Point p) {
     int x = applyHashU(f, p.x);
@@ -88,10 +62,6 @@ Point applyPointHashRapido(HashU *f, Point p) {
 ////////////////////////
 
 // Linked list para las celdas de la tabla
-typedef struct List {
-    Point p;
-    struct List *next;
-} List;
 
 // Crea un elemento de lista
 List *createList(Point p) {
@@ -124,19 +94,6 @@ void putBack(List **head, Point p) {
         current->next = newNode;
     }
 }
-
-// Nodos de la tabla (filas y columnas)
-typedef struct Node {
-    void *ptr;
-    Node *next;
-} Node;
-
-// Hash table
-typedef struct {
-    int d; // Tamaño de grilla
-    int realSize; // Tamaño real de la tabla (int)
-    Node **table; // Tabla
-} HashTable;
 
 
 // Crea una tabla de hash
@@ -220,7 +177,7 @@ void minDistanceCell(HashTable *tabla, Point p, int x_i, int y_i, int k, int siz
                     continue; // a su vez se post incrementa k_i
 
                 Point p2 = head->p; // Punto k_i de la lista
-                float d = distance(p, head->p); // Distancia entre el punto y el punto k_i de la lista
+                float d = dist(p, head->p); // Distancia entre el punto y el punto k_i de la lista
                 if (d < *minDistance) { // Si la distancia es menor que la minima distancia
                     *minDistance = d; // Se actualiza la minima distancia
                 }
@@ -291,9 +248,9 @@ int main() {
     Point p1 = {123456789, 87654321};
     Point p2 = applyPointHashRapido(f, p1);
     cout << "Hashing ";
-    printPoint(p1);
+    cout << p1;
     cout << " = ";
-    printPoint(p2);
+    cout << p2;
     cout << endl;
     destroyHashU(f);
     
