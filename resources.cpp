@@ -10,14 +10,27 @@ ostream& operator<<(ostream& os, const Point& p){
     return os;
 }
 
+#if DEBUG
 ostream& operator<<(ostream& os, const ClosestPoint& p){
-    os << "P1: " << *(p.p1) << " P2: " << *(p.p2) << " Distance: " << p.distance << " Comparaciones: " << p.comparaciones << " Tiempo: " << p.tiempo << endl;
+    os << "P1: " << *(p.p1) << " P2: " << *(p.p2) << " Distance: " << sqrt(p.distance) << " Comparaciones: " << p.comparaciones << " Tiempo: " << p.tiempo;
     return os;
 }
 
 void fprintf(FILE *out, const ClosestPoint& p){
-    fprintf(out, "P1: (%f, %f) P2: (%f, %f) Distance: %f Comparaciones: %d Tiempo: %f\n", p.p1->x, p.p1->y, p.p2->x, p.p2->y, p.distance, p.comparaciones, p.tiempo);
+    // (x1, y1), (x2, y2), distance, comparaciones, tiempo
+    fprintf(out, "%1.7f,%1.7f,%1.7f,%1.7f,%1.7f,%lld,%f\n", p.p1->x, p.p1->y, p.p2->x, p.p2->y, sqrt(p.distance), p.comparaciones, p.tiempo);
 }
+#else
+ostream& operator<<(ostream& os, const ClosestPoint& p){
+    os << "Distance: " << sqrt(p.distance) << " Comparaciones: " << p.comparaciones << " Tiempo: " << p.tiempo;
+    return os;
+}
+
+void fprintf(FILE *out, const ClosestPoint& p){
+    // (x1, y1), (x2, y2), distance, comparaciones, tiempo
+    fprintf(out, "%1.7f,%lld,%f\n", sqrt(p.distance), p.comparaciones, p.tiempo);
+}
+#endif
 
 // Needed to sort array of points 
 // according to X coordinate 
@@ -53,47 +66,82 @@ float dist(Point p1, Point p2)
 			); 
 }
 
-float dist2(Point p1, Point p2)
-{
-    return (p1.x - p2.x)*(p1.x - p2.x) + 
-				(p1.y - p2.y)*(p1.y - p2.y);     
+float distSquared(Point p1, Point p2) 
+{ 
+    return ( (p1.x - p2.x)*(p1.x - p2.x) + 
+                (p1.y - p2.y)*(p1.y - p2.y) 
+            ); // al no hacer la raiz cuadrada, se ahorra tiempo, pero se pierde precision en la distancia pues se compara con el cuadrado de la distancia,
+            // y al ser una comparacion de floats en números entre 0 y 1 (no calcular la raíz vuelve los decimales muy pequeños), se pierde precision.
 }
 
 // A Brute Force method to return the 
 // smallest distance between two points 
 // in P[] of size n 
-ClosestPoint& bruteForce(Point P[], int n, int &comparaciones) 
+ClosestPoint* bruteForce(Point P[], int n, ull &comparaciones) 
 { 
-	float min = numeric_limits<float>::max(); 
-    Point p1, p2;
-	for (int i = 0; i < n; ++i) 
+	float min = numeric_limits<float>::max();
+    float distance;
+    #if DEBUG
+    // Point *p = new Point();
+    // Point *pt2 = new Point();
+    Point* p = (Point*)malloc(sizeof(Point));
+    Point* pt2 = (Point*)malloc(sizeof(Point));
+	for (int i = 0; i < n-1; ++i) 
 		for (int j = i+1; j < n; ++j){
             comparaciones += 1;
-			if (dist(P[i], P[j]) < min){
-				min = dist(P[i], P[j]); 
-                p1 = P[i];
-                p2 = P[j];
+            distance = distSquared(P[i], P[j]);
+			if (distance < min){
+				min = distance;
+                *p = P[i];
+                *pt2 = P[j];
             }
         }
+    // ClosestPoint *c = new ClosestPoint();
     ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
-    Point *p = (Point*)malloc(sizeof(Point));
-    p->x = p1.x;
-    p->y = p1.y;
+    
     c->p1 = p;
-    Point *pt2 = (Point*)malloc(sizeof(Point));
-    pt2->x = p2.x;
-    pt2->y = p2.y;
     c->p2 = pt2;
-    // c->p1 = P[p1];
-    // c->p2 = P[p2];
+
     c->distance = min;
     c->comparaciones = comparaciones;
-	return *c;
+	return c;
+    #else
+    for (int i = 0; i < n; ++i) 
+		for (int j = i+1; j < n; ++j){
+            comparaciones += 1;
+			if (distSquared(P[i], P[j]) < min){
+				min = distSquared(P[i], P[j]);
+            }
+        }
+    // ClosestPoint *c = new ClosestPoint();
+    ClosestPoint *c = (ClosestPoint*)malloc(sizeof(ClosestPoint));
+    c->distance = min;
+    c->comparaciones = comparaciones;
+    return c;
+    #endif
 } 
 
 // A utility function to find 
 // minimum distance between the closest points 
-ClosestPoint& min(ClosestPoint &x, ClosestPoint &y) 
+ClosestPoint* min(ClosestPoint* x, ClosestPoint* y) 
 { 
-	return (x.distance < y.distance)? x : y; 
+    #if DEBUG
+    if (x->distance < y->distance){
+        free(y->p1);
+        free(y->p2);
+        free(y);
+        return x; 
+    }
+    free(x->p1);
+    free(x->p2);
+    free(x);
+    return y; 
+    #else
+    if (x->distance < y->distance){
+        free(y);
+        return x; 
+    }
+    free(x);
+    return y;
+    #endif
 } 

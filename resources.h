@@ -3,25 +3,63 @@
 #include "limits.h"
 #include <iostream>
 
+typedef unsigned long long ull;
+#define DEBUG true
+
 // A structure to represent a Point in 2D plane 
-class Point 
-{ 
-	public:
-	float x, y; 
+// class Point 
+// { 
+// 	public:
+// 	float x, y; 
 
-    friend std::ostream& operator<<(std::ostream& os, const Point& p);
-};
+//     friend std::ostream& operator<<(std::ostream& os, const Point& p);
+// };
+// A structure to represent a Point in 2D plane
+typedef struct Point{
+    float x, y;
+} Point;
 
-class ClosestPoint
-{
-    public:
+std::ostream& operator<<(std::ostream& os, const Point& p);
+
+
+
+#if DEBUG
+// class ClosestPoint
+// {
+//     public:
+//     Point *p1, *p2;
+//     float distance;
+//     ull comparaciones;
+//     double tiempo;
+
+//     friend std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
+// };
+typedef struct ClosestPoint{
     Point *p1, *p2;
     float distance;
-    int comparaciones;
+    ull comparaciones;
     double tiempo;
+} ClosestPoint;
 
-    friend std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
-};
+std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
+#else
+// class ClosestPoint
+// {
+//     public:
+//     float distance;
+//     ull comparaciones;
+//     double tiempo;
+
+//     friend std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
+// };
+typedef struct ClosestPoint{
+    float distance;
+    ull comparaciones;
+    double tiempo;
+} ClosestPoint;
+
+std::ostream& operator<<(std::ostream& os, const ClosestPoint& p);
+#endif
 
 void fprintf(FILE *out, const ClosestPoint& p);
 
@@ -36,13 +74,13 @@ int compareY(const void* a, const void* b);
 // distance between two points 
 float dist(Point p1, Point p2);
 
-float dist2(Point p1, Point p2);
+float distSquared(Point p1, Point p2);
 
 // A Brute Force method to return the 
 // smallest distance between two points 
 // in P[] of size n 
-ClosestPoint& bruteForce(Point P[], int n, int &comparaciones);
+ClosestPoint* bruteForce(Point P[], int n, ull &comparaciones);
 
 // A utility function to find 
 // minimum of two float values 
-ClosestPoint& min(ClosestPoint &x, ClosestPoint &y);
+ClosestPoint* min(ClosestPoint* x, ClosestPoint* y);

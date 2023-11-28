@@ -30,4 +30,8 @@ g++ -Wall -c resources.cpp
 g++ -I.\ -Wall -c divide-and-conquer.cpp
 g++ -I.\ -Wall -c experimento.cpp
 g++ -Wall -o experimento.exe experimento.o divide-and-conquer.o resources.o
-``` 
+```
+#### Optimizado 
+```
+g++ -Wall -O3 -flto -funroll-loops -I.\ -o experimento.exe experimento.cpp divide-and-conquer.cpp resources.cpp
+```
