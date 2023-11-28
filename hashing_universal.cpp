@@ -16,14 +16,14 @@ HashU *createHashU(int a, int b, int p, int m) {
 }
 
 // Aplica la funcion de hash a un entero
-int applyHashU(HashU *f, int x) {
-    return ((f->a * x + f->b) % f->p) % f->m;
+int applyHashU(HashU *f, float x) {
+    return (((int)(f->a * x) + f->b) % f->p) % f->m;
 }
 
-int applyHashRapido(HashU *f, int x) {
+int applyHashRapido(HashU *f, float x) {
     int k = f->m + 1 + rand();
     int k_2 = pow(2, k);
-    int resultado = ((f->a * x + f->b) % k_2) / f->m;
+    int resultado = (((int)(f->a * x) + f->b) % k_2) / f->m;
     return resultado;
 }
 
@@ -44,15 +44,15 @@ int createB(int p){
 
 // Aplica la funcion de hash a un punto
 Point applyPointHashU(HashU *f, Point p) {
-    int x = applyHashU(f, p.x);
-    int y = applyHashU(f, p.y);
+    float x = applyHashU(f, p.x);
+    float y = applyHashU(f, p.y);
     return {x, y};
 }
 
 // Aplica la funcion de hash rapido a un punto
 Point applyPointHashRapido(HashU *f, Point p) {
-    int x = applyHashRapido(f, p.x);
-    int y = applyHashRapido(f, p.y);
+    float x = applyHashRapido(f, p.x);
+    float y = applyHashRapido(f, p.y);
     return {x, y};
 }
 
@@ -176,7 +176,7 @@ void minDistanceCell(HashTable *tabla, Point p, int x_i, int y_i, int k, int siz
                 if (k_i++ < k && selfCell) // Si no se ha llegado a la profundidad k, las profundidades menores ya se compararon en la misma casilla
                     continue; // a su vez se post incrementa k_i
 
-                Point p2 = head->p; // Punto k_i de la lista
+                // Point p2 = head->p; // Punto k_i de la lista
                 float d = dist(p, head->p); // Distancia entre el punto y el punto k_i de la lista
                 if (d < *minDistance) { // Si la distancia es menor que la minima distancia
                     *minDistance = d; // Se actualiza la minima distancia
@@ -213,46 +213,46 @@ float nMinDistance(HashTable *tabla){
 }
 
 
-int main() {
-    // /* Hashing test */
-    // int p = 1000000007;
-    // int a = createA(p);
-    // int b = createB(p);
-    // int m = 100;
-    // HashU *f = createHashU(a, b, p, m);
-    // int x = 123456789;
-    // cout << "Hashing " << x << " = " << applyHashU(f, x) << endl;
-    // destroyHashU(f);
+// int main() {
+//     // /* Hashing test */
+//     // int p = 1000000007;
+//     // int a = createA(p);
+//     // int b = createB(p);
+//     // int m = 100;
+//     // HashU *f = createHashU(a, b, p, m);
+//     // int x = 123456789;
+//     // cout << "Hashing " << x << " = " << applyHashU(f, x) << endl;
+//     // destroyHashU(f);
     
-    // /* Point hashing test */
-    // int p = 1000000007;
-    // int a = createA(p);
-    // int b = createB(p);
-    // int m = 10;
-    // HashU *f = createHashU(a, b, p, m);
-    // Point p1 = {123456789, 87654321};
-    // Point p2 = applyPointHashU(f, p1);
-    // cout << "Hashing ";
-    // printPoint(p1);
-    // cout << " = ";
-    // printPoint(p2);
-    // cout << endl;
-    // destroyHashU(f);
+//     // /* Point hashing test */
+//     // int p = 1000000007;
+//     // int a = createA(p);
+//     // int b = createB(p);
+//     // int m = 10;
+//     // HashU *f = createHashU(a, b, p, m);
+//     // Point p1 = {123456789, 87654321};
+//     // Point p2 = applyPointHashU(f, p1);
+//     // cout << "Hashing ";
+//     // printPoint(p1);
+//     // cout << " = ";
+//     // printPoint(p2);
+//     // cout << endl;
+//     // destroyHashU(f);
 
-    /* Point hashing rapido test */
-    int p = 1000000007;
-    int a = createA(p);
-    int b = createB(p);
-    int m = 10;
-    HashU *f = createHashU(a, b, p, m);
-    Point p1 = {123456789, 87654321};
-    Point p2 = applyPointHashRapido(f, p1);
-    cout << "Hashing ";
-    cout << p1;
-    cout << " = ";
-    cout << p2;
-    cout << endl;
-    destroyHashU(f);
+//     /* Point hashing rapido test */
+//     int p = 1000000007;
+//     int a = createA(p);
+//     int b = createB(p);
+//     int m = 10;
+//     HashU *f = createHashU(a, b, p, m);
+//     Point p1 = {0.123456789f, 0.87654321f};
+//     Point p2 = applyPointHashRapido(f, p1);
+//     cout << "Hashing ";
+//     cout << p1;
+//     cout << " = ";
+//     cout << p2;
+//     cout << endl;
+//     destroyHashU(f);
     
-    return 0;
-}
+//     return 0;
+// }

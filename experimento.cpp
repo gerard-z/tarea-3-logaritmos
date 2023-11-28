@@ -311,8 +311,9 @@ void printArrayPoints(Point P[], int n){
 }
 
 int main(){
-    int nMin = 5'000'000, nMax= 50'000'000, nStep = 5'000'000, k = 100;
+    // int nMin = 5'000'000, nMax= 50'000'000, nStep = 5'000'000, k = 100;
     // int nMin = 500, nMax= 5000, nStep = 500, k = 10;
+    int nMin = 5, nMax= 20, nStep = 5, k = 1;
     // int n = (nMax - nMin) / nStep + 1;
     #if SAVE
     ClosestPoint ****resultados = experimento(nMin, nMax, nStep, k, bruteForce, closestDivide);
@@ -320,8 +321,8 @@ int main(){
     ClosestPoint ****resultados2 = experimentoRandom(nMin, nMax, nStep, k, bruteForce, closestDivide);
     delete[] resultados2;
     #else
-    experimento(nMin, nMax, nStep, k, closestDivide, closestDivide);
-    experimentoRandom(nMin, nMax, nStep, k, closestDivide, closestDivide);
+    experimento(nMin, nMax, nStep, k, closestDivide, closestRandom);
+    experimentoRandom(nMin, nMax, nStep, k, closestDivide, closestRandom);
     #endif
     return 0;
 }

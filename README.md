@@ -22,16 +22,18 @@ g++ -Wall -o divide-and-conquer.exe divide-and-conquer.o resources.o
 
 ### Para compilar el algoritmo de experimento con el archivo recursos.
 ```
-g++ -Wall -I.\ -o experimento.exe experimento.cpp divide-and-conquer.cpp resources.cpp
+g++ -Wall -I.\ -o experimento.exe experimento.cpp aleatorizado.cpp hashing_universal.cpp divide-and-conquer.cpp resources.cpp
 ```
 También se puede hacer paso a paso:
 ```
 g++ -Wall -c resources.cpp
 g++ -I.\ -Wall -c divide-and-conquer.cpp
+g++ -I.\ -Wall -c hashing_universal.cpp
+g++ -I.\ -Wall -c aleatorizado.cpp
 g++ -I.\ -Wall -c experimento.cpp
-g++ -Wall -o experimento.exe experimento.o divide-and-conquer.o resources.o
+g++ -Wall -o experimento.exe experimento.o aleatorizado.o hashing_universal.o divide-and-conquer.o resources.o
 ```
 #### Optimizado 
 ```
-g++ -Wall -O3 -flto -funroll-loops -I.\ -o experimento.exe experimento.cpp divide-and-conquer.cpp resources.cpp
+g++ -Wall -O3 -flto -funroll-loops -I.\ -o experimento.exe experimento.cpp aleatorizado.cpp hashing_universal.cpp divide-and-conquer.cpp resources.cpp
 ```

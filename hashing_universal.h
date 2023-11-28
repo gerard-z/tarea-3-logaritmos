@@ -1,4 +1,4 @@
-#include "resources.h"
+#include "divide-and-conquer.h"
 using namespace std;
 
 //////////////////////////
@@ -14,9 +14,9 @@ typedef struct {
 HashU *createHashU(int a, int b, int p, int m);
 
 // Aplica la funcion de hash a un entero
-int applyHashU(HashU *f, int x);
+int applyHashU(HashU *f, float x);
 
-int applyHashRapido(HashU *f, int x);
+int applyHashRapido(HashU *f, float x);
 
 // Libera la memoria de la funcion de hash
 void destroyHashU(HashU *f);
