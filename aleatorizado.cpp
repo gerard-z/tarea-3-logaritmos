@@ -19,8 +19,8 @@ ClosestPoint& closestRandom(Point P[], int n, int &comparaciones){
         } while (first_random_number == second_random_number);
         Point first_point = P[first_random_number];
         Point second_point = P[second_random_number];
-        if(dist2(first_point,second_point)<d_cuadrado)
-            d_cuadrado = dist2(first_point,second_point); 
+        if(distSquared(first_point,second_point)<d_cuadrado)
+            d_cuadrado = distSquared(first_point,second_point); 
     }
 
     float d = sqrt(d_cuadrado);
