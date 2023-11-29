@@ -312,8 +312,8 @@ void printArrayPoints(Point P[], int n){
 
 int main(){
     // int nMin = 5'000'000, nMax= 50'000'000, nStep = 5'000'000, k = 100;
-    // int nMin = 500, nMax= 5000, nStep = 500, k = 10;
-    int nMin = 5, nMax= 20, nStep = 5, k = 10;
+    int nMin = 500, nMax= 5000, nStep = 500, k = 10;
+    // int nMin = 5, nMax= 20, nStep = 5, k = 10;
     // int n = (nMax - nMin) / nStep + 1;
     #if SAVE
     ClosestPoint ****resultados = experimento(nMin, nMax, nStep, k, bruteForce, closestDivide);

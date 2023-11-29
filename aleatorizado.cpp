@@ -2,14 +2,12 @@
 #include <iostream>
 
 using namespace std;
+#define DEBUG true
 
-int indiceAleatorio(int n) {
-    random_device rd;
-    mt19937 generator(rd());
-    uniform_int_distribution<int> distribution(0,n);
-    
-    return distribution(generator);
-}
+#if DEBUG
+#include <chrono>
+using namespace std::chrono;
+#endif
 
 void findMinDistance(const vector<vector<vector<Point*>>> &grid, ClosestPoint *d, Point *p, Point *pt2, const vector<Point*> &gij1, const vector<Point*> &gij2, ull &comparaciones){
     int size = gij1.size();
@@ -127,12 +125,21 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     #endif
 
     // se escogen n pares de puntos aleatorios y se calcula la distancia entre ellos, se guarda la menor distancia.
+    #if DEBUG
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+    #endif
+    // Generador de numeros aleatorios entre 0 y n-1
+    random_device rd;
+    mt19937 generator(rd());
+    uniform_int_distribution<int> distribution(0,n-1);
+
     for(int i=0;i<n;i++){
         comparaciones += 1;
-        int first_random_number = indiceAleatorio(n);
+        // Obtiene un indice aleatorio en el rango [0, n-1]
+        int first_random_number = distribution(generator);
         int second_random_number;
         do { 
-        second_random_number = indiceAleatorio(n);
+        second_random_number = distribution(generator);
         } while (first_random_number == second_random_number);
         Point first_point = P[first_random_number];
         Point second_point = P[second_random_number];
@@ -148,11 +155,21 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
         }
     }
 
+    #if DEBUG
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
+    cout << "Tiempo distancia de puntos aleatorizados: " << time_span.count() << " segundos." << endl;
+    #endif
+
     // Dividir el plano [0,1]x[0,1] en d x d celulas de lado 1/d, agrupando los puntos en función de un hash.
     // Se crea un arreglo de listas de puntos, donde cada lista representa una celda del plano.
     float distance_cell = sqrt(d->distance);
     int cell_number = (int)(1/distance_cell)+1;
     // cout << "d: " << distance_cell << " cell_number: " << cell_number << endl;
+
+    #if DEBUG
+    t1 = high_resolution_clock::now();
+    #endif
 
     vector<vector<vector<Point*>>> grid(cell_number, vector<vector<Point*>>(cell_number));
     HashU *f = createHashU(100, 20, 1000000007, cell_number);
@@ -165,9 +182,23 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     }
     destroyHashU(f);
 
+    #if DEBUG
+    t2 = high_resolution_clock::now();
+    time_span = duration_cast<duration<double>>(t2 - t1);
+    cout << "Tiempo hash: " << time_span.count() << " segundos." << endl;
+    #endif
+
     // Se recorren las celdas del plano, y se calcula la distancia entre los puntos de cada celda y los puntos de las celdas vecinas.
     // Se guarda la menor distancia.
+    #if DEBUG
+    t1 = high_resolution_clock::now();
+    #endif
     checkGrid4neighbors(cell_number,grid,d,p,pt2,comparaciones);
+    #if DEBUG
+    t2 = high_resolution_clock::now();
+    time_span = duration_cast<duration<double>>(t2 - t1);
+    cout << "Tiempo distancia de puntos en celdas: " << time_span.count() << " segundos." << endl;
+    #endif
     // checkGrid8neighbors(cell_number,grid,d,p,pt2,comparaciones);
 
     // Se entrega el resultado
