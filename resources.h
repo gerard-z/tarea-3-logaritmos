@@ -9,7 +9,7 @@
 
 
 typedef unsigned long long ull;
-#define DEBUG true
+#define SavePoints true
 
 // A structure to represent a Point in 2D plane 
 // class Point 
@@ -28,7 +28,7 @@ std::ostream& operator<<(std::ostream& os, const Point& p);
 
 
 
-#if DEBUG
+#if SavePoints
 // class ClosestPoint
 // {
 //     public:

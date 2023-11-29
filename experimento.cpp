@@ -67,7 +67,7 @@ void probarAlgoritmo(FILE *out, Point P[], int n, int k, ClosestPoint* (*algorit
         #endif
         #if !SAVE
         // delete resultado;
-        #if DEBUG
+        #if SavePoints
         free(resultado->p1);
         free(resultado->p2);
         #endif
@@ -211,7 +211,7 @@ void pruebaAlgoritmoRandom(FILE *out, int n, int k, ClosestPoint* (*algoritmo)(P
         #if !SAVE
         // delete resultado1;
         // delete resultado2;
-        #if DEBUG
+        #if SavePoints
         free(resultado1->p1);
         free(resultado1->p2);
         free(resultado2->p1);

@@ -10,7 +10,7 @@ ostream& operator<<(ostream& os, const Point& p){
     return os;
 }
 
-#if DEBUG
+#if SavePoints
 ostream& operator<<(ostream& os, const ClosestPoint& p){
     os << "P1: " << *(p.p1) << " P2: " << *(p.p2) << " Distance: " << sqrt(p.distance) << " Comparaciones: " << p.comparaciones << " Tiempo: " << p.tiempo;
     return os;
@@ -81,7 +81,7 @@ ClosestPoint* bruteForce(Point P[], int n, ull &comparaciones)
 { 
 	float min = numeric_limits<float>::max();
     float distance;
-    #if DEBUG
+    #if SavePoints
     // Point *p = new Point();
     // Point *pt2 = new Point();
     Point* p = (Point*)malloc(sizeof(Point));
@@ -125,7 +125,7 @@ ClosestPoint* bruteForce(Point P[], int n, ull &comparaciones)
 // minimum distance between the closest points 
 ClosestPoint* min(ClosestPoint* x, ClosestPoint* y) 
 { 
-    #if DEBUG
+    #if SavePoints
     if (x->distance < y->distance){
         free(y->p1);
         free(y->p2);

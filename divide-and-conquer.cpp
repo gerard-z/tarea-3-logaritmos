@@ -27,7 +27,7 @@ ClosestPoint* stripClosest(Point strip[], int size, ClosestPoint* d, ull &compar
 	// Pick all points one by one and try the next points till the difference 
 	// between y coordinates is smaller than d. 
 	// This is a proven fact that this loop runs at most 6 times
-	#if DEBUG
+	#if SavePoints
 	Point p1 = *(d->p1), p2 = *(d->p2);
 	for (int i = 0; i < size-1; ++i)
 		for (int j = i+1; j < size && (strip[j].y - strip[i].y)*(strip[j].y - strip[i].y) < min; ++j) {

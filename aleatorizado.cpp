@@ -20,7 +20,7 @@ void findMinDistance(const vector<vector<vector<Point*>>> &grid, ClosestPoint *d
             float distance = distSquared(*gij1[k],*gij2[l]);
             if(distance < d->distance){
                 d->distance = distance;
-                #if DEBUG
+                #if SavePoints
                 *p = *gij1[k];
                 *pt2 = *gij2[l];
                 d->p1 = p;
@@ -41,7 +41,7 @@ void checkGrid4neighbors(int cell_number, const vector<vector<vector<Point*>>> &
                     float distance = distSquared(*grid[i][j][k],*grid[i][j][l]);
                     if(distance < d->distance){
                         d->distance = distance;
-                        #if DEBUG
+                        #if SavePoints
                         *p = *grid[i][j][k];
                         *pt2 = *grid[i][j][l];
                         d->p1 = p;
@@ -97,7 +97,7 @@ void checkGrid8neighbors(int cell_number, vector<vector<vector<Point*>>> &grid, 
                     float distance = distSquared(*grid[i][j][k],*grid[i][j][l]);
                     if(distance < d->distance){
                         d->distance = distance;
-                        #if DEBUG
+                        #if SavePoints
                         *p = *grid[i][j][k];
                         *pt2 = *grid[i][j][l];
                         d->p1 = p;
@@ -121,7 +121,7 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     
     ClosestPoint *d = (ClosestPoint*)malloc(sizeof(ClosestPoint));
     d->distance = 2;
-    #if DEBUG
+    #if SavePoints
     Point *p = (Point*)malloc(sizeof(Point));
     Point *pt2 = (Point*)malloc(sizeof(Point));
     #endif
@@ -139,7 +139,7 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
         float distance = distSquared(first_point,second_point);
         if(distance < d->distance){
             d->distance = distance;
-            #if DEBUG
+            #if SavePoints
             *p = first_point;
             *pt2 = second_point;
             d->p1 = p;
