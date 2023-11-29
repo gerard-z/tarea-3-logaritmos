@@ -57,7 +57,6 @@ ClosestPoint* stripClosest(Point strip[], int size, ClosestPoint* d, ull &compar
 	free(d->p1);
 	free(d->p2);
 	free(d);
-	return c;
 	#else
 	for (int i = 0; i < size; ++i) 
 		for (int j = i+1; j < size && (strip[j].y - strip[i].y)*(strip[j].y - strip[i].y) < min; ++j) {
@@ -72,8 +71,9 @@ ClosestPoint* stripClosest(Point strip[], int size, ClosestPoint* d, ull &compar
 	c->comparaciones = comparaciones;
 	delete[] strip;
 	free(d);
-	return c;
 	#endif
+
+	return c;
 } 
 
 // A recursive function to find the 

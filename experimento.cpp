@@ -2,7 +2,6 @@
 
 #include "experimento.h"
 using namespace std;
-using namespace std::chrono;
 
 #define PRINT true
 #define SAVE false

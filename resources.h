@@ -4,12 +4,15 @@
 #include <iostream>
 #include <random>
 #include <cstdlib>
+#include <chrono>
+using namespace std::chrono;
 
 
 
 
 typedef unsigned long long ull;
-#define SavePoints true
+#define SavePoints true // Para guardar los puntos más cercanos
+#define DEBUG true // Para imprimir los tiempos de ejecución
 
 // A structure to represent a Point in 2D plane 
 // class Point 

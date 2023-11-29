@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <ctime>
-#include <chrono>
 #include <aleatorizado.h>
 
 // Genera un set de n puntos pertenecientes al cuadrado [0,1)x[0,1)

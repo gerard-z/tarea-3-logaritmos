@@ -2,12 +2,6 @@
 #include <iostream>
 
 using namespace std;
-#define DEBUG true
-
-#if DEBUG
-#include <chrono>
-using namespace std::chrono;
-#endif
 
 void findMinDistance(const vector<vector<vector<Point*>>> &grid, ClosestPoint *d, Point *p, Point *pt2, const vector<Point*> &gij1, const vector<Point*> &gij2, ull &comparaciones){
     int size = gij1.size();
@@ -193,13 +187,14 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     #if DEBUG
     t1 = high_resolution_clock::now();
     #endif
+    // algunas pruebas parecen mostrar que el mejor rendimiento es con la 1era opcion
     checkGrid4neighbors(cell_number,grid,d,p,pt2,comparaciones);
+    // checkGrid8neighbors(cell_number,grid,d,p,pt2,comparaciones);
     #if DEBUG
     t2 = high_resolution_clock::now();
     time_span = duration_cast<duration<double>>(t2 - t1);
     cout << "Tiempo distancia de puntos en celdas: " << time_span.count() << " segundos." << endl;
     #endif
-    // checkGrid8neighbors(cell_number,grid,d,p,pt2,comparaciones);
 
     // Se entrega el resultado
     d->comparaciones = comparaciones;
