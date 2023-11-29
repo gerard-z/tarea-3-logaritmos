@@ -79,6 +79,7 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
         cout << P[i] << " hash: " << x << " " << y << endl;
         grid[x][y].push_back(P[i]);
     }
+    destroyHashU(f);
 
     // Se recorren las celdas del plano, y se calcula la distancia entre los puntos de cada celda y los puntos de las celdas vecinas.
     // Se guarda la menor distancia.
