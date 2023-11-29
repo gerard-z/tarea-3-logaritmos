@@ -17,7 +17,8 @@ HashU *createHashU(int a, int b, int p, int m) {
 
 // Aplica la funcion de hash a un entero
 int applyHashU(HashU *f, float x) {
-    return (((int)(f->a * x) + f->b) % f->p) % f->m;
+    int scaledCoord = static_cast<int>(x * f->m);
+    return (((int)(f->a * scaledCoord) + f->b) % f->p) % f->m;
 }
 
 int applyHashRapido(HashU *f, float x) {
