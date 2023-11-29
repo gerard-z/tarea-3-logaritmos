@@ -11,18 +11,18 @@ int indiceAleatorio(int n) {
     return distribution(generator);
 }
 
-void findMinDistance(const vector<vector<vector<Point>>> &grid, ClosestPoint *d, Point *p, Point *pt2, const vector<Point> &gij1, const vector<Point> &gij2, ull &comparaciones){
+void findMinDistance(const vector<vector<vector<Point*>>> &grid, ClosestPoint *d, Point *p, Point *pt2, const vector<Point*> &gij1, const vector<Point*> &gij2, ull &comparaciones){
     int size = gij1.size();
     int size2 = gij2.size();
     for(int k=0;k<size;k++){
         for(int l=0;l<size2;l++){
             comparaciones += 1;
-            float distance = distSquared(gij1[k],gij2[l]);
+            float distance = distSquared(*gij1[k],*gij2[l]);
             if(distance < d->distance){
                 d->distance = distance;
                 #if DEBUG
-                *p = gij1[k];
-                *pt2 = gij2[l];
+                *p = *gij1[k];
+                *pt2 = *gij2[l];
                 d->p1 = p;
                 d->p2 = pt2;
                 #endif
@@ -31,20 +31,19 @@ void findMinDistance(const vector<vector<vector<Point>>> &grid, ClosestPoint *d,
     }
 }
 
-void checkGrid4neighbors(int cell_number, const vector<vector<vector<Point>>> &grid, ClosestPoint *d, Point *p, Point *pt2, ull &comparaciones){
+void checkGrid4neighbors(int cell_number, const vector<vector<vector<Point*>>> &grid, ClosestPoint *d, Point *p, Point *pt2, ull &comparaciones){
     for(int i=0;i<cell_number;i++){
         for(int j=0;j<cell_number;j++){
-            vector<Point> gij1 = grid[i][j];
-            int size = gij1.size();
+            int size = grid[i][j].size();
             for(int k=0;k<size;k++){
                 for(int l=k+1;l<size;l++){
                     comparaciones += 1;
-                    float distance = distSquared(gij1[k],gij1[l]);
+                    float distance = distSquared(*grid[i][j][k],*grid[i][j][l]);
                     if(distance < d->distance){
                         d->distance = distance;
                         #if DEBUG
-                        *p = gij1[k];
-                        *pt2 = gij1[l];
+                        *p = *grid[i][j][k];
+                        *pt2 = *grid[i][j][l];
                         d->p1 = p;
                         d->p2 = pt2;
                         #endif
@@ -52,30 +51,28 @@ void checkGrid4neighbors(int cell_number, const vector<vector<vector<Point>>> &g
                 }
             }
             if (j<cell_number-1){
-                findMinDistance(grid,d,p,pt2,gij1,grid[i][j+1],comparaciones);
+                findMinDistance(grid,d,p,pt2,grid[i][j],grid[i][j+1],comparaciones);
                 if (i>0)
-                    findMinDistance(grid,d,p,pt2,gij1,grid[i-1][j+1],comparaciones);
+                    findMinDistance(grid,d,p,pt2,grid[i][j],grid[i-1][j+1],comparaciones);
             }
             if (i<cell_number-1){
-                findMinDistance(grid,d,p,pt2,gij1,grid[i+1][j],comparaciones);
+                findMinDistance(grid,d,p,pt2,grid[i][j],grid[i+1][j],comparaciones);
             }
             if (i==cell_number-1 || j==cell_number-1){
                 continue;
             }
-            findMinDistance(grid,d,p,pt2,gij1,grid[i+1][j+1],comparaciones);
+            findMinDistance(grid,d,p,pt2,grid[i][j],grid[i+1][j+1],comparaciones);
         }
     }
 
 }
 
-void checkGrid8neighbors(int cell_number, const vector<vector<vector<Point>>> &grid, ClosestPoint *d, Point *p, Point *pt2, ull &comparaciones){
-    vector<Point> cell1;
+void checkGrid8neighbors(int cell_number, vector<vector<vector<Point*>>> &grid, ClosestPoint *d, Point *p, Point *pt2, ull &comparaciones){
     int size1;
-    queue<vector<Point>> neighbors;
+    queue<vector<Point*>> neighbors;
     for(int i=0;i<cell_number;i++){
         for(int j=0;j<cell_number;j++){
-            cell1 = grid[i][j];
-            size1 = cell1.size();
+            size1 = grid[i][j].size();
             if (i>0){
                 neighbors.push(grid[i-1][j]);
                 if (j>0)
@@ -97,12 +94,12 @@ void checkGrid8neighbors(int cell_number, const vector<vector<vector<Point>>> &g
             for (int k=0;k<size1;k++){
                 for (int l=k+1;l<size1;l++){
                     comparaciones += 1;
-                    float distance = distSquared(cell1[k],cell1[l]);
+                    float distance = distSquared(*grid[i][j][k],*grid[i][j][l]);
                     if(distance < d->distance){
                         d->distance = distance;
                         #if DEBUG
-                        *p = cell1[k];
-                        *pt2 = cell1[l];
+                        *p = *grid[i][j][k];
+                        *pt2 = *grid[i][j][l];
                         d->p1 = p;
                         d->p2 = pt2;
                         #endif
@@ -110,10 +107,10 @@ void checkGrid8neighbors(int cell_number, const vector<vector<vector<Point>>> &g
                 }
             }
             while (!neighbors.empty()){
-                findMinDistance(grid,d,p,pt2,cell1,neighbors.front(),comparaciones);
+                findMinDistance(grid,d,p,pt2,grid[i][j],neighbors.front(),comparaciones);
                 neighbors.pop();
             }
-            cell1.clear();
+            grid[i][j].clear();
         }
     }
 }
@@ -155,23 +152,23 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     // Se crea un arreglo de listas de puntos, donde cada lista representa una celda del plano.
     float distance_cell = sqrt(d->distance);
     int cell_number = (int)(1/distance_cell)+1;
-    cout << "d: " << distance_cell << " cell_number: " << cell_number << endl;
+    // cout << "d: " << distance_cell << " cell_number: " << cell_number << endl;
 
-    vector<vector<vector<Point>>> grid(cell_number, vector<vector<Point>>(cell_number));
+    vector<vector<vector<Point*>>> grid(cell_number, vector<vector<Point*>>(cell_number));
     HashU *f = createHashU(100, 20, 1000000007, cell_number);
     for (int i = 0; i < n; i++){
         comparaciones += 1;
         int x = applyHashU(f, P[i].x);
         int y = applyHashU(f, P[i].y);
-        cout << P[i] << " hash: " << x << " " << y << endl;
-        grid[x][y].push_back(P[i]);
+        // cout << P[i] << " hash: " << x << " " << y << endl;
+        grid[x][y].push_back(&P[i]);
     }
     destroyHashU(f);
 
     // Se recorren las celdas del plano, y se calcula la distancia entre los puntos de cada celda y los puntos de las celdas vecinas.
     // Se guarda la menor distancia.
-    // checkGrid4neighbors(cell_number,grid,d,p,pt2,comparaciones);
-    checkGrid8neighbors(cell_number,grid,d,p,pt2,comparaciones);
+    checkGrid4neighbors(cell_number,grid,d,p,pt2,comparaciones);
+    // checkGrid8neighbors(cell_number,grid,d,p,pt2,comparaciones);
 
     // Se entrega el resultado
     d->comparaciones = comparaciones;
