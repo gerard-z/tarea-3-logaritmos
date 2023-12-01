@@ -15,8 +15,6 @@ void findMinDistance(const vector<vector<vector<Point*>>> &grid, ClosestPoint *d
                 #if SavePoints
                 *p = *gij1[k];
                 *pt2 = *gij2[l];
-                d->p1 = p;
-                d->p2 = pt2;
                 #endif
             }
         }
@@ -36,8 +34,6 @@ void checkGrid4neighbors(int cell_number, const vector<vector<vector<Point*>>> &
                         #if SavePoints
                         *p = *grid[i][j][k];
                         *pt2 = *grid[i][j][l];
-                        d->p1 = p;
-                        d->p2 = pt2;
                         #endif
                     }
                 }
@@ -92,8 +88,6 @@ void checkGrid8neighbors(int cell_number, vector<vector<vector<Point*>>> &grid, 
                         #if SavePoints
                         *p = *grid[i][j][k];
                         *pt2 = *grid[i][j][l];
-                        d->p1 = p;
-                        d->p2 = pt2;
                         #endif
                     }
                 }
@@ -112,20 +106,22 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     //calculo del d mimimo aleatorio
     
     ClosestPoint *d = (ClosestPoint*)malloc(sizeof(ClosestPoint));
-    d->distance = 2;
+    d->distance = 2.0f;
     #if SavePoints
     Point *p = (Point*)malloc(sizeof(Point));
     Point *pt2 = (Point*)malloc(sizeof(Point));
+    d->p1 = p;
+    d->p2 = pt2;
     #endif
 
     // se escogen n pares de puntos aleatorios y se calcula la distancia entre ellos, se guarda la menor distancia.
-    #if DEBUG
-    high_resolution_clock::time_point t1 = high_resolution_clock::now();
-    #endif
     // Generador de numeros aleatorios entre 0 y n-1
     random_device rd;
     mt19937 generator(rd());
     uniform_int_distribution<int> distribution(0,n-1);
+    #if DEBUG
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+    #endif
 
     for(int i=0;i<n;i++){
         comparaciones += 1;
@@ -135,16 +131,12 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
         do { 
         second_random_number = distribution(generator);
         } while (first_random_number == second_random_number);
-        Point first_point = P[first_random_number];
-        Point second_point = P[second_random_number];
-        float distance = distSquared(first_point,second_point);
+        float distance = distSquared(P[first_random_number],P[second_random_number]);
         if(distance < d->distance){
             d->distance = distance;
             #if SavePoints
-            *p = first_point;
-            *pt2 = second_point;
-            d->p1 = p;
-            d->p2 = pt2;
+            *p = P[first_random_number];
+            *pt2 = P[second_random_number];
             #endif
         }
     }
@@ -159,19 +151,27 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     // Se crea un arreglo de listas de puntos, donde cada lista representa una celda del plano.
     float distance_cell = sqrt(d->distance);
     int cell_number = (int)(1/distance_cell)+1;
-    // cout << "d: " << distance_cell << " cell_number: " << cell_number << endl;
 
     #if DEBUG
+    d->comparaciones = 0;
+    d->tiempo = 0;
+    cout << "d: " << *d << " cell_number: " << cell_number << endl;
     t1 = high_resolution_clock::now();
     #endif
 
     vector<vector<vector<Point*>>> grid(cell_number, vector<vector<Point*>>(cell_number));
-    HashU *f = createHashU(100, 20, 1000000007, cell_number);
+    uniform_int_distribution<int> uniformAB(cell_number,1'000'000'006); // Lograr que distintos puntos correspondan a entero distintos
+    int a = uniformAB(generator);
+    int b = uniformAB(generator);
+    #if DEBUG
+    cout << "a: " << a << " b: " << b << endl;
+    #endif
+    HashU *f = createHashU(a, b, 1000000007, cell_number);
     for (int i = 0; i < n; i++){
         comparaciones += 1;
-        int x = applyHashU(f, P[i].x);
-        int y = applyHashU(f, P[i].y);
-        // cout << P[i] << " hash: " << x << " " << y << endl;
+        ull x = applyHashU(f, P[i].x);
+        ull y = applyHashU(f, P[i].y);
+        cout << P[i] << " hash: " << x << " " << y << endl;
         grid[x][y].push_back(&P[i]);
     }
     destroyHashU(f);

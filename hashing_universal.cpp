@@ -1,4 +1,5 @@
 #include "hashing_universal.h"
+#include <bitset>
 using namespace std;
 
 //////////////////////////
@@ -6,7 +7,7 @@ using namespace std;
 //////////////////////////
 
 // Crea una funcion de hash universal
-HashU *createHashU(int a, int b, int p, int m) {
+HashU *createHashU(ull a, ull b, ull p, ull m) {
     HashU *f = (HashU *) malloc(sizeof(HashU));
     f->a = a;
     f->b = b;
@@ -16,15 +17,16 @@ HashU *createHashU(int a, int b, int p, int m) {
 }
 
 // Aplica la funcion de hash a un entero
-int applyHashU(HashU *f, float x) {
-    int scaledCoord = static_cast<int>(x * f->m);
-    return (((int)(f->a * scaledCoord) + f->b) % f->p) % f->m;
+ull applyHashU(HashU *f, float x) {
+    // ull scaledCoord = static_cast<ull>(x * f->m);
+    return ((static_cast<ull>(f->a * x) + f->b) % f->p) % f->m;
 }
 
-int applyHashRapido(HashU *f, float x) {
-    int k = f->m + 1 + rand();
-    int k_2 = pow(2, k);
-    int resultado = (((int)(f->a * x) + f->b) % k_2) / f->m;
+// Aplica la funcion de hash rapido a un entero, aprovechando que m y p son potencias de 2
+ull applyHashRapido(HashU *f, float x) {
+    ull l = ceil(log2(f->m));
+    ull k_2 = pow(2, l+2) - 1; // k = 2^l - 1 = 111...1 (l+2 veces)
+    ull resultado = (((int)(f->a * x) + f->b) & k_2) >> l;
     return resultado;
 }
 

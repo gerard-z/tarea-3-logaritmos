@@ -11,6 +11,7 @@ using namespace std::chrono;
 
 
 typedef unsigned long long ull;
+typedef unsigned int uint;
 #define SavePoints true // Para guardar los puntos más cercanos
 #define DEBUG true // Para imprimir los tiempos de ejecución
 

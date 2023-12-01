@@ -7,16 +7,16 @@ using namespace std;
 
 // // Funcion de hash universal 
 typedef struct {
-    int a, b, p, m;
+    ull a, b, p, m;
 } HashU;
 
 // Crea una funcion de hash universal
-HashU *createHashU(int a, int b, int p, int m);
+HashU *createHashU(ull a, ull b, ull p, ull m);
 
 // Aplica la funcion de hash a un entero
-int applyHashU(HashU *f, float x);
+ull applyHashU(HashU *f, float x);
 
-int applyHashRapido(HashU *f, float x);
+ull applyHashRapido(HashU *f, float x);
 
 // Libera la memoria de la funcion de hash
 void destroyHashU(HashU *f);
