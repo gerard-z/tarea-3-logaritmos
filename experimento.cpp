@@ -43,11 +43,11 @@ void probarAlgoritmo(FILE *out, Point P[], int n, int k, ClosestPoint* (*algorit
     ull comparaciones, comparaciones_promedio = 0;
     double tiempo_promedio = 0;
     printf("probando en n = %d\n", n);
+    Point *P_copy = (Point*)malloc(n * sizeof(Point));
     for (int i = 0; i < k; i++) {
         printf("%d ", i);
         comparaciones = 0;
         // Point *P_copy = new Point[n];
-        Point *P_copy = (Point*)malloc(n * sizeof(Point));
         memcpy(P_copy, P, n * sizeof(Point));
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
         ClosestPoint *resultado = algoritmo(P_copy, n, comparaciones);
@@ -60,7 +60,6 @@ void probarAlgoritmo(FILE *out, Point P[], int n, int k, ClosestPoint* (*algorit
         comparaciones_promedio += comparaciones;
         tiempo_promedio += tiempo;
         // delete[] P_copy;
-        freeArrayPoints(P_copy, n);
         #if PRINT
         fprintf(out, *resultado);
         #endif
@@ -74,6 +73,7 @@ void probarAlgoritmo(FILE *out, Point P[], int n, int k, ClosestPoint* (*algorit
         #endif
     }
     printf("\n");
+    freeArrayPoints(P_copy, n);
     #if PRINT
     comparaciones_promedio /= k;
     tiempo_promedio /= k;
@@ -311,8 +311,8 @@ void printArrayPoints(Point P[], int n){
 
 int main(){
     // int nMin = 5'000'000, nMax= 50'000'000, nStep = 5'000'000, k = 100;
-    int nMin = 500, nMax= 5000, nStep = 500, k = 10;
-    // int nMin = 5, nMax= 20, nStep = 5, k = 10;
+    // int nMin = 500, nMax= 5000, nStep = 500, k = 10;
+    int nMin = 5, nMax= 20, nStep = 5, k = 10;
     // int n = (nMax - nMin) / nStep + 1;
     #if SAVE
     ClosestPoint ****resultados = experimento(nMin, nMax, nStep, k, bruteForce, closestDivide);
