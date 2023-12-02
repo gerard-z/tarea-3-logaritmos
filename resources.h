@@ -23,7 +23,21 @@ typedef unsigned int uint;
 
 //     friend std::ostream& operator<<(std::ostream& os, const Point& p);
 // };
-// A structure to represent a Point in 2D plane
+
+// A structure to represent a Point in 2D plane int
+typedef struct Coord {
+    int x, y;
+
+    bool operator==(const Coord& rhs) const
+    {
+        return x == rhs.x && y == rhs.y;
+    }
+
+} Coord;
+
+std::ostream& operator<<(std::ostream& os, const Coord& p);
+
+// A structure to represent a Point in 2D plane float
 typedef struct Point{
     float x, y;
 } Point;

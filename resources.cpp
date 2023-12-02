@@ -5,6 +5,11 @@ using namespace std;
 /* Following two functions are needed for library function qsort(). 
 Refer: http://www.cplusplus.com/reference/clibrary/cstdlib/qsort/ */
 
+ostream& operator<<(ostream& os, const Coord& p){
+    os << "(" << p.x << ", " << p.y << ")";
+    return os;
+}
+
 ostream& operator<<(ostream& os, const Point& p){
     os << "(" << p.x << ", " << p.y << ")";
     return os;

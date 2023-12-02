@@ -7,26 +7,38 @@ using namespace std;
 //////////////////////////
 
 // Crea una funcion de hash universal
-HashU *createHashU(ull a, ull b, ull p, ull m) {
+HashU *createHashU(ull a, ull b, ull p, ull m, int c) {
     HashU *f = (HashU *) malloc(sizeof(HashU));
     f->a = a;
     f->b = b;
     f->p = p;
     f->m = m;
+    f->cell_number = c;
+    return f;
+}
+
+// Crea una funcion de hash rápido
+HashR *createHashR(ull a, ull b, ull p, ull m, int c) {
+    HashR *f = (HashR *) malloc(sizeof(HashR));
+    f->a = a;
+    f->b = b;
+    f->p = p;
+    f->m = m;
+    f->cell_number = c;
     return f;
 }
 
 // Aplica la funcion de hash a un entero
-ull applyHashU(HashU *f, float x) {
+ull applyHashU(const HashU *f, int x) {
     // ull scaledCoord = static_cast<ull>(x * f->m);
     return ((static_cast<ull>(f->a * x) + f->b) % f->p) % f->m;
 }
 
 // Aplica la funcion de hash rapido a un entero, aprovechando que m y p son potencias de 2
-ull applyHashRapido(HashU *f, float x) {
+ull applyHashRapido(const HashR *f, int x) {
     ull l = ceil(log2(f->m));
     ull k_2 = pow(2, l+2) - 1; // k = 2^l - 1 = 111...1 (l+2 veces)
-    ull resultado = (((int)(f->a * x) + f->b) & k_2) >> l;
+    ull resultado = ((static_cast<ull>(f->a * x) + f->b) & k_2) >> l;
     return resultado;
 }
 
@@ -46,14 +58,14 @@ int createB(int p){
 }
 
 // Aplica la funcion de hash a un punto
-Point applyPointHashU(HashU *f, Point p) {
+Point applyPointHashU(const HashU *f, Point p) {
     float x = applyHashU(f, p.x);
     float y = applyHashU(f, p.y);
     return {x, y};
 }
 
 // Aplica la funcion de hash rapido a un punto
-Point applyPointHashRapido(HashU *f, Point p) {
+Point applyPointHashRapido(const HashR *f, Point p) {
     float x = applyHashRapido(f, p.x);
     float y = applyHashRapido(f, p.y);
     return {x, y};

@@ -6,17 +6,46 @@ using namespace std;
 //////////////////////////
 
 // // Funcion de hash universal 
-typedef struct {
+typedef struct HashU{
     ull a, b, p, m;
+    int cell_number;
+
+    HashU(ull new_a, ull new_b, ull new_p, ull new_m, int c) : a(new_a), b(new_b), p(new_p), m(new_m), cell_number(c) {}
+
+    std::size_t operator()(const Coord &c) const noexcept
+    {
+        int h1 = c.x * cell_number + c.y;
+        return ((static_cast<ull>(a * h1) + b) % p) % m;
+    }
 } HashU;
 
+
+typedef struct HashR{
+    ull a, b, p, m;
+    int cell_number;
+
+    HashR(ull new_a, ull new_b, ull new_p, ull new_m, int c) : a(new_a), b(new_b), p(new_p), m(new_m), cell_number(c) {}
+
+    std::size_t operator()(const Coord &c) const noexcept
+    {
+        int h1 = c.x * cell_number + c.y;
+        ull l = ceil(log2(m));
+        ull k_2 = pow(2, l+2) - 1; // k = 2^l - 1 = 111...1 (l+2 veces)
+        ull resultado = ((static_cast<ull>(a * h1) + b) & k_2) >> l;
+        return resultado;
+    }
+} HashR;
+
 // Crea una funcion de hash universal
-HashU *createHashU(ull a, ull b, ull p, ull m);
+HashU *createHashU(ull a, ull b, ull p, ull m, int c);
+
+// Crea una funcion de hash rápido
+HashR *createHashR(ull a, ull b, ull p, ull m, int c);
 
 // Aplica la funcion de hash a un entero
-ull applyHashU(HashU *f, float x);
+ull applyHashU(const HashU *f, int x);
 
-ull applyHashRapido(HashU *f, float x);
+ull applyHashRapido(const HashR *f, int x);
 
 // Libera la memoria de la funcion de hash
 void destroyHashU(HashU *f);
@@ -28,10 +57,10 @@ int createA(int p);
 int createB(int p);
 
 // Aplica la funcion de hash a un punto
-Point applyPointHashU(HashU *f, Point p);
+Point applyPointHashU(const HashU *f, Point p);
 
 // Aplica la funcion de hash rapido a un punto
-Point applyPointHashRapido(HashU *f, Point p);
+Point applyPointHashRapido(const HashR *f, Point p);
 
 
 ////////////////////////

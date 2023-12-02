@@ -1,6 +1,7 @@
 #include "stdlib.h"
 #include "hashing_universal.h"
 #include "queue"
+#include "unordered_map"
 using namespace std;
 
 // Busca la distancia minima entre los puntos de la celda gij1 y los de la celda gij2
