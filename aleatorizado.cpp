@@ -22,40 +22,38 @@ void findMinDistance(ClosestPoint *d, Point *p, Point *pt2, const vector<Point*>
 }
 
 void checkGrid4neighbors(int cell_number, const unordered_map<Coord, vector<Point*>, HashU> &grid, ClosestPoint *d, Point *p, Point *pt2, ull &comparaciones){
-    for(int i=0;i<cell_number;i++){
-        for(int j=0;j<cell_number;j++){
-            Coord coord = {i,j};
-            if (!grid.contains(coord))
-                continue;
-            int size = grid.at(coord).size();
-            for(int k=0;k<size;k++){
-                for(int l=k+1;l<size;l++){
-                    comparaciones += 1;
-                    float distance = distSquared(*grid.at(coord)[k],*grid.at(coord)[l]);
-                    if(distance < d->distance){
-                        d->distance = distance;
-                        #if SavePoints
-                        *p = *grid.at(coord)[k];
-                        *pt2 = *grid.at(coord)[l];
-                        #endif
-                    }
+    // for(int i=0;i<cell_number;i++){
+    //     for(int j=0;j<cell_number;j++){
+    for (const auto& [coord, value] : grid){
+        int size = value.size();
+        for(int k=0;k<size;k++){
+            for(int l=k+1;l<size;l++){
+                comparaciones += 1;
+                float distance = distSquared(*value[k],*value[l]);
+                if(distance < d->distance){
+                    d->distance = distance;
+                    #if SavePoints
+                    *p = *value[k];
+                    *pt2 = *value[l];
+                    #endif
                 }
             }
-            Coord coord2 = {i,j+1};
-            if (grid.contains(coord2)){
-                findMinDistance(d,p,pt2,grid.at(coord),grid.at(coord2),comparaciones);
-                coord2 = {i-1,j+1};
-                if (grid.contains(coord2))
-                    findMinDistance(d,p,pt2,grid.at(coord),grid.at(coord2),comparaciones);
-            }
-            coord2 = {i+1,j};
-            if (grid.contains(coord2)){
-                findMinDistance(d,p,pt2,grid.at(coord),grid.at(coord2),comparaciones);
-            }
-            coord2 = {i+1,j+1};
-            if (grid.contains(coord2)){
-                findMinDistance(d,p,pt2,grid.at(coord),grid.at(coord2),comparaciones);
-            }
+        }
+        Coord coord2 = coord;
+        coord2.y += 1;
+        if (grid.contains(coord2))
+            findMinDistance(d,p,pt2,grid.at(coord),grid.at(coord2),comparaciones);
+        coord2.x -= 1;
+        if (grid.contains(coord2))
+            findMinDistance(d,p,pt2,grid.at(coord),grid.at(coord2),comparaciones);
+        coord2 = coord;
+        coord2.x += 1;
+        if (grid.contains(coord2)){
+            findMinDistance(d,p,pt2,grid.at(coord),grid.at(coord2),comparaciones);
+        }
+        coord2.y += 1;
+        if (grid.contains(coord2)){
+            findMinDistance(d,p,pt2,grid.at(coord),grid.at(coord2),comparaciones);
         }
     }
 
@@ -164,7 +162,7 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     #if DEBUG
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
     duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
-    cout << "Tiempo distancia de puntos aleatorizados: " << time_span.count() << " segundos." << endl;
+    std::cout << "Tiempo distancia de puntos aleatorizados: " << time_span.count() << " segundos." << endl;
     #endif
 
     // Crear una grilla de celdas d x d, aproximando los puntos a dichos cuadrados.
@@ -174,7 +172,7 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     #if DEBUG
     d->comparaciones = 0;
     d->tiempo = 0;
-    cout << "d: " << *d << " cell_number: " << cell_number << endl;
+    std::cout << "d: " << *d << " cell_number: " << cell_number << endl;
     t1 = high_resolution_clock::now();
     #endif
 
@@ -183,7 +181,7 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     #if DEBUG
     t2 = high_resolution_clock::now();
     time_span = duration_cast<duration<double>>(t2 - t1);
-    cout << "Tiempo rounding: " << time_span.count() << " segundos." << endl;
+    std::cout << "Tiempo rounding: " << time_span.count() << " segundos." << endl;
     #endif
 
     // Se crea una tabla hash donde las llaves corresponden a los puntos en la grilla, y los valores a los puntos en el plano.
@@ -195,7 +193,7 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     int a = uniformAB(generator);
     int b = uniformAB(generator);
     #if DEBUG
-    cout << "a: " << a << " b: " << b << endl;
+    std::cout << "a: " << a << " b: " << b << endl;
     #endif
     HashU *f = createHashU(a, b, 1000000007, n, cell_number);
     unordered_map<Coord, vector<Point*>, HashU> hashTable(0, *f);
@@ -208,17 +206,17 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     #if DEBUG
     // auto print_key_value = [](const auto& key, const auto& value)
     // {
-    //     std::cout << "Key:[" << key << "] Value:[";
+    //     std::std::cout << "Key:[" << key << "] Value:[";
     //     for (const auto& point : value)
-    //         std::cout << "Point: " << *point << " ";
-    //     std::cout << "]\n";
+    //         std::std::cout << "Point: " << *point << " ";
+    //     std::std::cout << "]\n";
     // };
     // for (const auto& [key, value] : hashTable)
     //     print_key_value(key, value);
 
     t2 = high_resolution_clock::now();
     time_span = duration_cast<duration<double>>(t2 - t1);
-    cout << "Tiempo hash: " << time_span.count() << " segundos." << endl;
+    std::cout << "Tiempo hash: " << time_span.count() << " segundos." << endl;
     #endif
 
     // Se recorren las celdas del plano, y se calcula la distancia entre los puntos de cada celda y los puntos de las celdas vecinas.
@@ -232,7 +230,7 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     #if DEBUG
     t2 = high_resolution_clock::now();
     time_span = duration_cast<duration<double>>(t2 - t1);
-    cout << "Tiempo distancia de puntos en celdas: " << time_span.count() << " segundos." << endl;
+    std::cout << "Tiempo distancia de puntos en celdas: " << time_span.count() << " segundos." << endl;
     #endif
 
     // Se entrega el resultado
