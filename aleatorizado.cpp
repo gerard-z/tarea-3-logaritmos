@@ -108,16 +108,16 @@ void checkGrid8neighbors(int cell_number, unordered_map<Coord, vector<Point*>, H
     }
 }
 
-vector<Coord> roundToGrid(Point P[], int n, float distance_cell){
-    std::vector<Coord> roundedPoints;
-    for (int i = 0; i < n; i++){
-        Point p = P[i];
-        int roundedX = floorf(p.x / distance_cell);
-        int roundedY = floorf(p.y / distance_cell);
-        roundedPoints.push_back({roundedX, roundedY});
-    }
-    return roundedPoints;
-}
+// static vector<Coord> roundToGrid(Point P[], int n, float distance_cell){
+//     std::vector<Coord> roundedPoints;
+//     for (int i = 0; i < n; i++){
+//         Point p = P[i];
+//         int roundedX = static_cast<int>(p.x / distance_cell);
+//         int roundedY = static_cast<int>(p.y / distance_cell);
+//         roundedPoints.push_back({roundedX, roundedY});
+//     }
+//     return roundedPoints;
+// }
 
 ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     
@@ -167,7 +167,7 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
 
     // Crear una grilla de celdas d x d, aproximando los puntos a dichos cuadrados.
     float distance_cell = sqrt(d->distance);
-    int cell_number = (int)(1/distance_cell)+1;
+    int cell_number = (int)(1.0f/distance_cell)+1;
 
     #if DEBUG
     d->comparaciones = 0;
@@ -176,7 +176,14 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     t1 = high_resolution_clock::now();
     #endif
 
-    vector<Coord> roundedPoints = roundToGrid(P, n, distance_cell);
+    // vector<Coord> roundedPoints = roundToGrid(P, n, distance_cell);
+    std::vector<Coord> roundedPoints;
+    for (int i = 0; i < n; i++){
+        Point p = P[i];
+        int roundedX = static_cast<int>(p.x / distance_cell);
+        int roundedY = static_cast<int>(p.y / distance_cell);
+        roundedPoints.push_back({roundedX, roundedY});
+    }
 
     #if DEBUG
     t2 = high_resolution_clock::now();
