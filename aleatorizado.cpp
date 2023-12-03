@@ -202,7 +202,7 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     #if DEBUG
     std::cout << "a: " << a << " b: " << b << endl;
     #endif
-    HashU *f = createHashU(a, b, 1000000007, n, cell_number);
+    HashU *f = createHashU(a, b, 18446744073709551557ULL, 2*n, cell_number);
     unordered_map<Coord, vector<Point*>, HashU> hashTable(0, *f);
     for (int i = 0; i < n; i++){
         comparaciones += 1;

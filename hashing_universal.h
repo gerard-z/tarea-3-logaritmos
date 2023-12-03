@@ -15,7 +15,7 @@ typedef struct HashU{
     std::size_t operator()(const Coord &c) const noexcept
     {
         int h1 = c.x * cell_number + c.y;
-        return ((static_cast<ull>(a * h1) + b) % p) % m;
+        return ((a * static_cast<ull>(h1) + b) % p) % m;
     }
 } HashU;
 
@@ -31,7 +31,7 @@ typedef struct HashR{
         int h1 = c.x * cell_number + c.y;
         ull l = ceil(log2(m));
         ull k_2 = pow(2, l+2) - 1; // k = 2^l - 1 = 111...1 (l+2 veces)
-        ull resultado = ((static_cast<ull>(a * h1) + b) & k_2) >> l;
+        ull resultado = ((a * static_cast<ull>(h1) + b) & k_2) >> l;
         return resultado;
     }
 } HashR;
