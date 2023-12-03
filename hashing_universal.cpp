@@ -28,6 +28,14 @@ HashR *createHashR(ull a, ull b, ull p, ull m, int c) {
     return f;
 }
 
+// Crea una funcion de hash con primos de Mersenne
+HashM *createHashM(ull m, int c) {
+    HashM *f = (HashM *) malloc(sizeof(HashM));
+    f->m = m;
+    f->cell_number = c;
+    return f;
+}
+
 // Aplica la funcion de hash a un entero
 ull applyHashU(const HashU *f, int x) {
     // ull scaledCoord = static_cast<ull>(x * f->m);

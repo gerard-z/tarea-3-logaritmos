@@ -204,11 +204,15 @@ ClosestPoint* closestRandom(Point P[], int n, ull &comparaciones){
     #endif
     HashU *f = createHashU(a, b, 18446744073709551557ULL, 2*n, cell_number);
     unordered_map<Coord, vector<Point*>, HashU> hashTable(0, *f);
+    // HashR *f = createHashR(a, b, 18446744073709551557ULL, 2*n, cell_number);
+    // unordered_map<Coord, vector<Point*>, HashR> hashTable(0, *f);
+    // HashM *f = createHashM(2*n, cell_number);
+    // unordered_map<Coord, vector<Point*>, HashM> hashTable(0, *f);
     for (int i = 0; i < n; i++){
         comparaciones += 1;
         hashTable[roundedPoints[i]].push_back(&P[i]);
     }
-    destroyHashU(f);
+    free(f);
 
     #if DEBUG
     // auto print_key_value = [](const auto& key, const auto& value)

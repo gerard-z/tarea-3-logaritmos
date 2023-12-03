@@ -15,7 +15,7 @@ typedef struct HashU{
     std::size_t operator()(const Coord &c) const noexcept
     {
         int h1 = c.x * cell_number + c.y;
-        return ((a * static_cast<ull>(h1) + b) % p) % m;
+        return static_cast<std::size_t>(((a * static_cast<ull>(h1) + b) % p) % m);
     }
 } HashU;
 
@@ -30,17 +30,34 @@ typedef struct HashR{
     {
         int h1 = c.x * cell_number + c.y;
         ull l = ceil(log2(m));
-        ull k_2 = pow(2, l+2) - 1; // k = 2^l - 1 = 111...1 (l+2 veces)
+        ull k_2 = (1 << (2*l)) - 1; // k = 2^l - 1 = 111...1 (l+2 veces)
         ull resultado = ((a * static_cast<ull>(h1) + b) & k_2) >> l;
-        return resultado;
+        return static_cast<std::size_t>(resultado);
     }
 } HashR;
+
+struct HashM {
+    const uint64_t mersenne_prime = (1ULL << 61) - 1;
+    ull m;
+    int cell_number;
+
+    HashM(ull new_m, int c) : m(new_m), cell_number(c) {}
+
+    std::size_t operator()(const Coord &c) const noexcept {
+        // Algoritmo de hash utilizando el primo de Mersenne
+        int h1 = c.x * cell_number + c.y;
+        return static_cast<std::size_t>(h1 & mersenne_prime);
+    }
+};
 
 // Crea una funcion de hash universal
 HashU *createHashU(ull a, ull b, ull p, ull m, int c);
 
 // Crea una funcion de hash rápido
 HashR *createHashR(ull a, ull b, ull p, ull m, int c);
+
+// Crea una funcion de hash con primos de Mersenne
+HashM *createHashM(ull m, int c);
 
 // Aplica la funcion de hash a un entero
 ull applyHashU(const HashU *f, int x);
